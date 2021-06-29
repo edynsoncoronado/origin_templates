@@ -1,0 +1,172 @@
+<p>Las tareas repetitivas son aburridas, y un SysAdmin no se puede dar el lujo de perder su tiempo. </p>
+<p>Un SysAdmin está constantemente creando mundos en su mente, predicíendo el futuro, salvando la tierra de programadores que suben su código sin pruebas unitarias, solucionando bugs en producción un sábado por la noche, y protegiendo los servidores de los niños ratas.</p>
+<p>Por eso y muchas cosas más este post es dedicado a ellos.</p>
+<div class="text-center">
+<img src="https://media.giphy.com/media/dbtDDSvWErdf2/giphy.gif" class="rounded" alt="fire crowd" style="width: 50%;"/>
+</div>
+
+<p>Como SysAdmin nos enfrentamos a muchos retos, y el deploy es uno de ellos, donde no basta con solucionar el problema, sino que este tiene que ser rápido y eficiente.</p>
+<p>Existen muchas herramientas que permiten optimizar este proceso.</p>
+<p>¿Cuál escoger?, depende. Hay muchas variables, una de las más importantes es saber el nivel técnico de los integrantes y el feedback.</p>
+<p>El nivel técnico de los integrantes es importante conocer. No sirve tener un solo ironman en el equipo, porque si uno cae, se tiene a otro que puede cubrir ese rol.</p>
+<p>Y ese otro ironman, no necesariamente tiene que ser una persona, puede ser un bot. Ajá!</p>
+<div class="text-center">	
+<img src="https://media.giphy.com/media/l4GTEzmKiPEklyEH0T/giphy.gif" class="rounded" alt="ironman dancing" style="width: 50%;">
+</div>
+
+<p>Como mencioné, en el deploy se buscar ser rápido y eficiente, y que mejor que un bot.</p>
+<p>El día de hoy les mostraré cómo crear un bot en telegram, desarrollado en python y su despliegue en la nube utilizando Heroku. Let's go!</p>
+
+<h4><strong>1) Crear Bot con BotFather</strong></h4>
+<div class="text-center">
+<img src="assets/origin/images/yaroslabdevops/1.png" class="rounded" alt="...">
+</div>
+<p>En el chat ingresamos <b>/newbot</b></p>
+<p>Luego el nombre del bot.</p>
+<p>Y por último el username.</p>
+<p>Responderá que está creado el bot con el token para poder acceder a nuestro bot.</p>
+<p>Luego puedes consultar los bots que tengas creado con <b>/mybots</b> y te dará la opción para consultar el token o crear otro.</p>
+
+<h4><strong>2) Código Python</strong></h4>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+import telegram
+import logging
+import random
+import sys
+from decouple import config
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s,"
+)
+logger = logging.getLogger()
+
+TOKEN = config('TOKEN')
+mode = config('MODE')
+
+if mode == 'dev':
+    def run(updater):
+        updater.start_polling()
+        updater.idle()  # Permite finalizar el bot con Ctrl + C
+elif mode == 'prod':
+    def run(updater):
+        PORT = config('PORT')
+        HEROKU_APP_NAME = config('HEROKU_APP_NAME')
+        # https://github.com/python-telegram-bot/python-telegram-bot/wiki/Webhooks#heroku
+        updater.start_webhook(
+            listen="0.0.0.0",
+            port=PORT,
+            url_path=TOKEN,
+            webhook_url="https://{}.herokuapp.com/{}".format(HEROKU_APP_NAME, TOKEN)
+        )
+else:
+    logger.info("No se especificó el MODE.")
+    sys.exit()
+
+
+def start(update, context):
+    name = update.message['chat']['first_name']
+    logger.info(f'El usuario {name}, ha iniciado una conversación')
+    update.message.reply_text(f'Hola {name} yo soy tu bot.')
+
+
+def random_number(update, context):
+    user_id = update.message['chat']['id']
+    logger.info(f"El usuario {user_id}, ha solicitado un número aleatorio")
+    number = random.randint(0, 10)
+    context.bot.sendMessage(
+        chat_id=user_id,
+        parse_mode="HTML",
+        text=f'<b>Número</b> aleatorio: \n{number}'
+    )
+
+
+def echo(update, context):
+    user_id = update.message['chat']['id']
+    logger.info(f"El usuario {user_id}, ha solicitado un número aleatorio")
+    text = update.message.text
+    context.bot.sendMessage(
+        chat_id=user_id,
+        parse_mode="MarkdownV2",
+        text=f'*Escribiste:*\n_{text}_'
+    )
+
+
+if __name__ == '__main__':
+    # Obtener información de nuestro bot
+    my_bot = telegram.Bot(token=TOKEN)
+    # print(my_bot.getMe())
+    logger.info("Starting bot")
+    # Enlazamos nuestro updater con nuestro bot
+    updater = Updater(my_bot.token, use_context=True)
+    # Creamos un despachador
+    dp = updater.dispatcher
+    # Creamos los manejadores
+    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('random', random_number))
+    dp.add_handler(MessageHandler(Filters.text, echo))
+
+    run(updater)
+		</code>
+	</pre>
+</div>
+En el code está adaptado para el entorno de desarrollo y producción, para mi entorno local, le paso las variables con el <b>.env</b>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+TOKEN=123123123123123123123123123
+MODE=dev
+		</code>
+	</pre>
+</div>
+
+<h4><strong>4) Deploy en Heroku</strong></h4>
+<p><b>4.1) Crear la aplicación en heroku.</b></p>
+<p><b>4.2) Setear variables de entorno.</b></p>
+<img src="assets/origin/images/yaroslabdevops/2.png" class="figure-img img-fluid rounded" alt="...">
+<p><b>4.3) Estructura de mi proyecto.</b></p>
+<div class="text-center">
+<img src="assets/origin/images/yaroslabdevops/3.png" class="rounded" alt="...">
+</div>
+<p>Mi aplicación lo tengo en un entorno virtual dentro de la carpeta <b>app</b>.</p>
+<p>El código está en <b>bot.py</b></p>
+<p>El <b>.gitignore</b> es para no subir el <b>.env</b> a producción, ya que mis variables ya las tengo definidas en Heroku.</p>
+<p>Los archivos <b>requirementes.txt</b> y <b>Procfile</b> son usados por Heroku para deployar la aplicación</p>
+<p><b>4.4) Procfile</b></p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+web: python3 bot.py
+		</code>
+	</pre>
+</div>
+<p><b>4.5) Comandos para el deploy.</b></p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+heroku login
+git init
+git add .
+git commit -m "first commit"
+heroku git:remote -a YourAppName
+git push heroku master
+		</code>
+	</pre>
+</div>
+<br>
+<br>
+<p>Ya tenemos el bot en producción, y como había mencionado antes, otro de los puntos importantes es el feedback, un ciclo de retroalimentación que nos indique cómo va el proceso de deploy, que es útil para el SysAdmin. Y otra referencia de feedback es la experiencia de usuario, ya que nuestra aplicación será el medio de comunicación con el usuario, esta debe ser fácil de usar y de respuesta inmediata.</p>
+<h4><strong>5) Feedback</strong></h4>
+<p><b>5.1) Logs</b></p>
+<p>heroku logs -t -a YourAppName</p>
+<p><b>5.2) Bot Telegram</b></p>
+<div class="text-center">
+<img src="assets/origin/images/yaroslabdevops/4.png" class="figure-img img-fluid rounded" alt="...">
+</div>
+
+<p>Este es un primer paso de lo que se puede hacer con la automatización, una pequeña ayuda para acabar con las tareas repetitivas de los SysAdmin, y poco a poco, remplazarlos por algo más eficiente.</p>
+<div class="text-center">	
+<img src="https://media.giphy.com/media/IZY2SE2JmPgFG/giphy.gif" class="rounded" alt="terminator" style="width: 50%;">
+</div>
