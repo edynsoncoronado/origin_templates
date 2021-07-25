@@ -1,0 +1,86 @@
+<p>The order here also matters.</p>
+<strong>1) monthly_challenges/challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("&lt;int:month&gt;", views.monthly_challenge_by_number),
+    path("&lt;str:month&gt;", views.monthly_challenge),
+]
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/views.py</strong>
+<p>We first wanna check for month being an integer and possibly convert it, if it's convertible, and call this view.</p>
+<p>And then only as a second step, if this dynamic segment is not a number, we wanna call this other view here, which handles any other values basically.</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound
+
+
+def monthly_challenge_by_number(request, month):
+    return HttpResponse(month)
+
+
+def monthly_challenge(request, month):
+    challenge_text = None
+    if month == 'january':
+        challenge_text = 'Eat no meat for the entire month!'
+    elif month == 'february':
+        challenge_text = 'Walk for at least 20 minutes every day!'
+    else:
+        return HttpResponseNotFound("This month is not supported!")
+    return HttpResponse(challenge_text)
+        </code>
+    </pre>
+</div>
+<p>And it allows us to run different logic based on the value type of the dynamic segment.</p>
+<p>Most importantly here, <strong>ints and strings</strong>.</p>
+<p>A similar concept that does not exist for <strong>Booleans</strong>.</p>
+<h3><strong>Adding More Dynamic View Logic</strong></h3>
+<p>Now, of course, this could fail if month is not one of the keys here and therefore, we can simply add try catch here to try this code.</p>
+<strong>monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound
+
+
+monthly_challenges = {
+    "january": "Eat no meat for the entire month!",
+    "february": "Walk for at least 20 minutes every day!",
+    "march": "Learn Django for at least 20 minutes every day!",
+    "april": "My birthday",
+    "may": "Mother's Day",
+    "june": "Father's Day",
+    "july": "National Holidays",
+    "august": "One more month",
+    "september": "Spring is here",
+    "october": "Costume party",
+    "november": "Christmas is comming",
+    "december": "The year is over"
+}
+
+
+def monthly_challenge_by_number(request, month):
+    return HttpResponse(month)
+
+
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+    except:
+        return HttpResponseNotFound("This month is not supported!")
+    return HttpResponse(challenge_text)
+        </code>
+    </pre>
+</div>
+<hr>
+<a href="https://www.youtube.com/watch?v=FQMVFyJnQsYhttps://docs.djangoproject.com/en/3.1/topics/http/urls/#path-converters" class="link-info" target="_blank">Path converters</a>

@@ -1,0 +1,64 @@
+<p>Let's now dig in a bit deeper and let's learn a bit more about Django and what we can do with requests and responses and so on.</p>
+<p>Python 3.6 dictionaries are by default ordered in Python.</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+>>> a = {'enero': 1, 'febrero': 2, 'marzo': 3, 'abril': 4}
+>>> a.keys()
+dict_keys(['enero', 'febrero', 'marzo', 'abril'])
+        </code>
+    </pre>
+</div>
+<p>So I can rely on the fact that the first key in my dictionary will be the first item in that list.</p>
+<strong>monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+
+
+monthly_challenges = {
+    "january": "Eat no meat for the entire month!",
+    "february": "Walk for at least 20 minutes every day!",
+    "march": "Learn Django for at least 20 minutes every day!",
+    "april": "My birthday",
+    "may": "Mother's Day",
+    "june": "Father's Day",
+    "july": "National Holidays",
+    "august": "One more month",
+    "september": "Spring is here",
+    "october": "Costume party",
+    "november": "Christmas is comming",
+    "december": "The year is over"
+}
+
+
+def monthly_challenge_by_number(request, month):
+    months = list(monthly_challenges.keys())
+    if month > len(months):
+        return HttpResponseNotFound("Invalid month")
+
+    redirect_month = months[month - 1]
+    return HttpResponseRedirect('/challenges/' + redirect_month)
+
+
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+    except:
+        return HttpResponseNotFound("This month is not supported!")
+    return HttpResponse(challenge_text)
+        </code>
+    </pre>
+</div>
+<p>The response was a 302, which might not tell you much, but which is a redirect response, any response code starting with a three is a redirect.</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+[27/May/2021 00:37:19] "GET /challenges/12 HTTP/1.1" 302 0
+[27/May/2021 00:37:19] "GET /challenges/december HTTP/1.1" 200 16
+        </code>
+    </pre>
+</div>
+<p>And therefore the browser automatically sent another request to challenges December, since that was the redirect URL we passed with the redirect to the browser.</p>

@@ -1,0 +1,78 @@
+<p>Now we do change styling by adding CSS.</p>
+<p>And we typically add CSS, not by adding CSS tags in our HTML documents, though we could do that.</p>
+<p>CSS, JavaScript, images, are called static files because they don't change. It's served in the same way all the time.</p>
+<p>Our templates here do change.</p>
+<p>Having such static files is quite common, and therefore the only question now, is where do we store those files?</p>
+<p>How do we now utilize those static files?</p>
+<p>Well, that includes a couple of steps.</p>
+<strong>1) monthly_challenges/challenges/static/challenges/challenges.css</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+ul {
+    list-style: none;
+}
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/monthly_challenges/settings.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+INSTALLED_APPS = [
+    'challenges',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+]
+...
+...
+STATIC_URL = '/static/'
+        </code>
+    </pre>
+</div>
+<p>Django will already look for folders named static in your app folders.</p>
+<p>So in your project, it will look into the app folders and look for a static file and it'll automatically detect those and include those.</p>
+<strong>3) monthly_challenges/challenges/templates/challenges/index.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{% extends "base.html" %}
+{% load static %}
+
+{% block css_file %}
+&lt;link rel="stylesheet" href="{% static 'challenges/challenges.css' %}"&gt;
+{% endblock %}
+        </code>
+    </pre>
+</div>
+<p>Well, because we load it "static" here, we can now use "static tag" here,  unlike the other tags not available by default in our templates.</p>
+<p>Instead, it's only available once we load static.</p>
+<p>We can now use that, thanks to load static.</p>
+<p>Static is a bit like the URL tag.</p>
+<p>It allows us to construct a path to a static asset.</p>
+<p>So to a CSS file, for example, and for that we now need to specify the path.</p>
+<strong>4) monthly_challenges/templates/base.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{% block page_title %}My Challenges{% endblock %}&lt;/title&gt;
+    {% block css_file %}{% endblock %}
+&lt;/head&gt;
+&lt;body&gt;
+    {% block content %}{% endblock %}
+</body>
+</html>
+        </code>
+    </pre>
+</div>
+<p>In the browser developer tools, you'll see the CSS file is loaded correctly.</p>
+<div class="text-center">
+<img src="assets_env_image/22.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>

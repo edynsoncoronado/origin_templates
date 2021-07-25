@@ -1,0 +1,113 @@
+<p>HTML snippets, template snippets which we might wanna reuse in various templates but which don't act as a base template with the entire structure that should be used by some other template.</p>
+<strong>1) monthly_challenges/challenges/templates/challenges/includes/header.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;header&gt;
+    &lt;nav&gt;
+        &lt;a href="{% url 'index' %}">All Challenges&lt;/a&gt;
+    &lt;/nav&gt;
+&lt;/header&gt;
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/templates/challenges/index.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{% extends "base.html" %}
+
+{% block page_title %}
+    All Challenges
+{% endblock %}
+
+{% block content %}
+    <strong>{%  include "challenges/includes/header.html" %}</strong>
+    &lt;ul&gt;
+        {% for month in months %}
+            &lt;li&gt;&lt;a href="{% url 'month-challenge' month %}"&gt;{{ month|title }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+{% endblock %}
+        </code>
+    </pre>
+</div>
+<strong>3) monthly_challenges/challenges/templates/challenges/challenges.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{% extends "base.html" %}
+
+{% block page_title %}
+    {{ month_name }} Challenge
+{% endblock %}
+
+{% block content %}
+    <strong>{%  include "challenges/includes/header.html" %}</strong>
+    &lt;h1&gt;{{ month_name|title }} Challenge&lt;/h1&gt;
+    {% if text is not None %}
+        &lt;h2&gt;{{ text }}&lt;/h2&gt;
+    {% else %}
+        &lt;p&gt;There is no challenge for this month yet!&lt;/p&gt;
+    {% endif %}
+{% endblock %}
+        </code>
+    </pre>
+</div>
+<strong>4) monthly_challenges/challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    <strong>path("", views.index, name="index"),</strong>
+    path("&lt;int:month&gt;", views.monthly_challenge_by_number),
+    path("&lt;str:month&gt;", views.monthly_challenge, name="month-challenge"),
+]
+        </code>
+    </pre>
+</div>
+<p>Now as a side note, there also is another nice thing about this include feature.</p>
+<p>The included snippets here will have access to the same variables you have access to in the template where you include them.</p>
+<strong>1) monthly_challenges/challenges/templates/challenges/includes/header.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+ &lt;header&gt;
+    &lt;nav&gt;
+        &lt;a href="{% url 'index' %}"&gt;All Challenges&lt;/a>
+    &lt;/nav&gt;
+    <strong>{{ month_name }}</strong>
+&lt;/header&gt;
+        </code>
+    </pre>
+</div>
+<strong>** month_name variable exists in challenge.html</strong>
+<p>You can also pass in specific context, specific values for the included template.</p>
+<p>You do this with the <strong>with</strong> keyword here and then you can set extra variables which will be available inside of the included snippet which are not available in the template which is including.</p>
+<strong>1) monthly_challenges/challenges/templates/challenges/index.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{%  include "challenges/includes/header.html" <strong>with active_page="index"%</strong>}
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/templates/challenges/includes/header.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;header&gt;
+    &lt;nav&gt;
+        &lt;a href="{% url 'index' %}"&gt;All Challenges&lt;/a&gt;
+    &lt;/nav&gt;
+    {{ month_name }}
+&lt;/header&gt;
+
+<strong>{{ active_page }}</strong>
+        </code>
+    </pre>
+</div>

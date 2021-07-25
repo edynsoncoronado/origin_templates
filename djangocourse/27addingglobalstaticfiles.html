@@ -1,0 +1,54 @@
+<p>For project-wide static files.</p>
+<p>We can use a similar approach as we did with project-wide templates.</p>
+<strong>1) monthly_challenges/static/styles.css </strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
+
+html {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+body {
+    margin: 0;
+}
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/templates/base.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{% load static %}
+
+&lt;!DOCTYPE html>
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{% block page_title %}My Challenges{% endblock %}&lt;/title&gt;
+    &lt;link rel="stylesheet" href="{% static 'styles.css' %}"&gt;
+    {% block css_file %}{% endblock %}
+&lt;/head&gt;
+&lt;body&gt;
+    {% block content %}{% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+</div>
+<strong>3) monthly_challenges/monthly_challenges/settings.py</strong>
+<p>Now with this global static folder, we'll have a problem because Django does look for a static folders and the files in there by default for your apps.</p>
+<p>The problem is it does not look for such a static folder on a global level in your main project, on the root level of your project.</p>
+<p>We need to add a special setting to <strong>settings.py</strong> file to tell Django, to pick up that static folder and look into that folder as well.</p>
+
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+...
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
+        </code>
+    </pre>
+</div>
+<p>You can specify folders that should be considered when Django collects and loads static files.</p>

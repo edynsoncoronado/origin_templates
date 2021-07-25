@@ -1,0 +1,84 @@
+<ol start="0">
+	<li>
+		<h4><strong>I can simply create a function.</strong></h4>
+		<p>There's a few options:</p>
+		<ul>
+			<li>From scratch</li>
+			<li>Blueprint</li>
+			<li>container image</li>
+			<li>browse the serverless application repository</li>
+		</ul>
+		<div class="text-center">
+			<img src="assets_env_image/2.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+	</li>
+	<li>
+		<h4><strong>We'll do is just go to "from scratch"</strong></h4>
+		<p>We'll leave the default runtime, node.js.</p>
+		<div class="text-center">
+			<img src="assets_env_image/3.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+	</li>
+	<li>
+		<h4><strong>Lambda needs permissions, so it needs permissions to be able to interact with other services.</strong></h4>
+		<p>By default Lambda will create a new role with basic permissions.</p>
+		<div class="text-center">
+			<img src="assets_env_image/4.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+	</li>
+	<li>
+		<h4><strong>Under advanced settings here, there's a couple of additional options, including the ability to connect to VPC.</strong></h4>
+		<div class="text-center">
+			<img src="assets_env_image/5.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+		<p>All we're going to do now is simply create the function.</p>
+	</li>
+	<li>
+		<h4><strong>Now we have our Lambda Function</strong></h4>
+		<div class="text-center">
+			<img src="assets_env_image/6.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+		<p>And in our Lambda function we can see it has its own function ARN, so that's the Amazon Resource Name.</p>
+	</li>
+	<li>
+		<h4><strong>We can test our function, which we're going to do in a moment.</strong></h4>
+		<div class="text-center">
+			<img src="assets_env_image/7.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+	</li>
+	<li>
+		<h4><strong>We can monitor our function through Amazon CloudWatch.</strong></h4>
+		<div class="text-center">
+			<img src="assets_env_image/8.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+	</li>
+	<li>
+		<h4><strong>On configuration, you can see there's quite a few options here for how you can configure your function.</strong></h4>
+		<div class="text-center">
+			<img src="assets_env_image/9.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+	</li>
+	<li>
+		<h4><strong>And under aliases, this is where you can actually create something called an alias, which points to different versions of your function.</strong></h4>
+		<div class="text-center">
+			<img src="assets_env_image/10.png" class="rounded" alt="" style="width: 80%;">
+		</div>
+	</li>
+</ol>
+<p>Let's just go back to test.</p>
+<p>And what I'm going to do is just call this MyTest and then I can save those changes.</p>
+<p>I now have a saved test event.</p>
+<p>And if I click on test, it will simply execute.</p>
+<div class="text-center">
+	<img src="assets_env_image/11.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p>It literally just comes back and says hello from Lambda.</p>
+<p>So this is your Hello World application on Lambda.</p>
+<p>The status code 200 just means success.</p>
+<p>So you're billed based on two things the amount of time your function runs and the amount of memory that's assigned to your function.</p>
+<p>Now, you can also click on logs here and that will take us over to CloudWatch logs.</p>
+<p>And here we have something called a log stream.</p>
+<div class="text-center">
+	<img src="assets_env_image/12.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p>So CloudWatch Logs is a collection service for the logs from your applications and your systems.</p>

@@ -1,0 +1,79 @@
+<p>All your HTML documents always have the same core structure.</p>
+<p>The doc type, the HTML wrapper, a head section, the body section and it's then just the content in the body and also some content in the head which might differ.</p>
+<p>But you might wanna define this core skeleton once maybe also including some navigation or some footer which is always shared, and then just inject the parts which are different in your different templates into that core structure, that core template which you might wanna define once.</p>
+<p>And that is exactly the idea behind template inheritance.</p>
+<strong>1) monthly_challenges/templates/base.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{% block page_title %}My Challenges{% endblock %}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    {% block content %}{% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/templates/challenges/index.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{% extends "base.html" %}
+
+{% block page_title %}
+    All Challenges
+{% endblock %}
+{% block content %}
+    &lt;ul&gt;
+        {% for month in months %}
+        &lt;li&gt;&lt;a href="{% url 'month-challenge' month %}">{{ month|title }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+{% endblock %}
+        </code>
+    </pre>
+</div>
+<strong>3) monthly_challenges/challenges/templates/challenges/challenge.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{% extends "base.html" %}
+
+{% block page_title %}
+    {{ month_name }} Challenge
+{% endblock %}
+
+{% block content %}
+    &lt;h1&gt;{{ month_name|title }} Challenge&lt;/h1&gt;
+    {% if text is not None %}
+        &lt;h2&gt;{{ text }}&lt;/h2&gt;
+    {% else %}
+        &lt;p&gt;There is no challenge for this month yet!&lt;/p&gt;
+    {% endif %}
+{% endblock %}
+        </code>
+    </pre>
+</div>
+<strong>4) monthly_challenges/monthly_challenges/settings.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+...
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            # BASE_DIR / 'challenges' / 'templates'
+            BASE_DIR / 'templates'
+        ],
+        'APP_DIRS': True,
+	...
+    },
+]
+        </code>
+    </pre>
+</div>

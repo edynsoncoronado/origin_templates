@@ -1,0 +1,29 @@
+<p>I want to focus on the response we're sending back and I also want to add another URL soon.
+But let's start with the response, with the response data to be precise.</p>
+<p>But typically when you visit a website, what you see is something like this.</p>
+<div class="text-center">
+    <img src="assets_env_image/14.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>Not just some plain text as we have it here.</p>
+<div class="text-center">
+    <img src="assets_env_image/15.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>Now we see something like this because typically we don't just get back some plain text, but instead HTML content where HTML stands for hypertext markup language, which is basically code that can be parsed and understood by the browser.</p>
+<p>And it's then typically combined with CSS for a cascading style sheet, to add some styling, to make does look beautiful and present the content in a visually pleasant way.</p>
+<p>For this we can use a Python feature, which called string interpolation or F-strings, And then inside of that string, we can basically inject values into that text.</p>
+<strong>1) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        response_data = f"&lt;h1&gt;{challenge_text}&lt;/h1&gt;"
+        return HttpResponse(response_data)    
+    except:
+        return HttpResponseNotFound("&lt;h1&gt;This month is not supported!&lt;/h1&gt;")
+        </code>
+    </pre>
+</div>
+<p>So that we have the hard coded opening and closing H1 tags, but in between we inject a value.</p>
+<p>And with that, we took a step towards a more realistic application, at least a little bit.</p>

@@ -1,0 +1,49 @@
+<ol>
+	<li>
+		<p>So let's say there's a static website and the user uploads a file using the static website.</p>
+		<p>Then what happens is using an event notification, the static website will then notify a Lambda function.</p>
+	</li>
+	<li>
+		<p>A Lambda function is a type of serverless service, which is a compute service, and it enables us to run code. So we've stored some code in Lambda and when it receives the event, the code executes and in this case the code is going to process the file that was uploaded to the bucket.</p>
+	</li>
+	<li>
+		Then it might save a copy to another bucket.
+	</li>
+	<li>
+Then what happens is using an event notification, the static website will then notify a Lambda function.
+	</li>
+	<li>
+		The queue could then notify another Lambda function. It can then process the data and maybe it stores a record in a DynamoDB table in a database.
+	</li>
+	<li>
+		So the record gets stored in the database and maybe the Lambda function also sends a notification using an SNS topic that goes out to an email address.
+	</li>
+</ol>
+<div class="text-center">
+	<img src="assets_env_image/0.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p>So this is just an example of how you can use a number of different serverless services.</p>
+<p>All of these are serverless.</p>
+<p>So you can pay just for what you use and you can scale them very easily as well.</p>
+
+<ul>
+	<li>With serverless there are no instances to manage.</li>
+	<li>You don't need to provision hardware.</li>
+	<li>There is no management of operating systems or software.</li>
+	<li>Capacity provisioning and patching is handled automatically.</li>
+	<li>Provides automatic scaling and high availability.</li>
+	<li>Can be very cheap!</li>
+</ul>
+
+<h4><strong>Some Examples Serveless services include:</strong></h4>
+<ul>
+	<li>AWS Lambda</li>
+	<li>AWS Fargate</li>
+	<li>Amazon EventBridge</li>
+	<li>AWS Step Functions</li>
+	<li>Amazon SQS (Simple Queue Service)</li>
+	<li>Amazon SNS (Simple Notification Service)</li>
+	<li>Amazon API Gateway</li>
+	<li>Amazon S3</li>
+	<li>Amazon DynamoDB</li>
+</ul>

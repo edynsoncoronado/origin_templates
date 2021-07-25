@@ -1,0 +1,46 @@
+<p id="567b013d-c06e-4bf8-8c08-049d1a00c313" class=""><strong>Thread constructor</strong></p>
+<div class="code-wrapper">
+<pre id="03fccd15-ef14-4fb6-99cc-58a5ef2342ab" class="code"><code id="code">Thread(group=None, target=None, name=None, args=(), kwargs={}, *, daemon=None)</code></pre>
+</div>
+<p id="500f8054-439d-4657-b510-4239ff92fe19" class="">The <strong>group</strong> argument is reserved for future extensions.</p><p id="a992c8b4-b5fd-400b-be9a-07808813a118" class=""><strong>target</strong> is the code that the thread being created will execute. It can be any callable object. A callable object can be a function or an object of a class that has the __<strong>call__</strong> method.</p><p id="bbe22fbb-43bb-44d0-a388-fe5906cec507" class="">Next, we can pass the arguments to the target either as a tuple <strong>args</strong> or as a dictionary of key value pairs using <strong>kwargs</strong>.</p><p id="666eb011-ffd5-4649-bdd1-aeff9b634cf1" class="">Finally, the constructor takes a boolean specifying if the thread being created should be treated as a <strong>daemon</strong> thread.</p><p id="963b9fcf-8634-4e1d-b4d5-49c88b7dcbe3" class="">
+</p>
+<br>
+<p id="3d0001e7-8497-4a06-ab4d-b5f8a8bb1925" class=""><strong>Creating thread</strong></p>
+<div class="code-wrapper">
+<pre id="20e55e32-5647-488a-9ce1-3392eb6a6627" class="code"><code id="code">from threading import Thread
+from threading import current_thread
+
+
+def thread_task(a, b, c, key1, key2):
+    print(&quot;{0} received the arguments: {1} {2} {3} {4} {5}&quot;.format(current_thread().getName(), a, b, c, key1, key2))
+
+
+myThread = Thread(group=None,  # reserved
+                  target=thread_task,  # callable object
+                  name=&quot;demoThread&quot;,  # name of thread
+                  args=(1, 2, 3),  # arguments passed to the target
+                  kwargs={&#x27;key1&#x27;: 777,
+                          &#x27;key2&#x27;: 111},  # dictionary of keyword arguments
+                  daemon=None  # set true to make the thread a daemon
+                  )
+
+myThread.start()  # start the thread
+
+myThread.join()  # wait for the thread to complete</code></pre>
+</div>
+<p id="2914743f-3031-491e-80c2-5c9940e2d36e" class="">
+</p>
+<div class="code-wrapper">
+<pre id="c11a3178-09f2-476b-8908-e8ba3cda12c8" class="code"><code>
+Output:
+
+demoThread received the arguments: 1 2 3 777 111</code></pre>
+</div>
+<p id="da2fd6c5-9f15-4f49-a726-0437e5448859" class="">Once the thread object is created, we must start it by invoking the start() method. Once started, the thread will execute the target.</p><p id="a90a30c1-93c4-43ab-9e3b-b578a750eb43" class="">
+</p>
+<br>
+<p id="9725f3ee-19e8-4e89-b44d-b1fc711cb277" class=""><strong>Main Thread</strong></p><p id="e1339520-9680-4fe1-89cb-1e543b744b55" class="">The astute reader would realize that there has to be another thread that is actually executing the code we wrote to create a new thread.</p><p id="2374b7db-c90f-480b-8306-63023585c743" class="">The main thread is the thread from which the Python interpreter was started.</p><p id="29729d1f-3dfb-4467-ac98-0fa85f4ed5d1" class="">The below image captures the above script in debug mode.</p><p id="4cb74e59-b02e-47db-81aa-b2cd166ae049" class=""><strong>Notice the debugger dropdown displays two threads:</strong></p><ul id="4e990d11-64a9-413c-bdc6-7af3cf925baf" class="bulleted-list"><li>Main Thread</li></ul><ul id="7116fea9-fed2-4dba-a985-e855612698ea" class="bulleted-list"><li>demoThread</li></ul><p id="40af047b-f62c-49fe-abd4-da4d42451cba" class="">
+</p>
+<div class="text-center">
+    <img src="assets_env_image/20.png" class="rounded" alt="..." style="width: 80%;">
+</div>

@@ -1,0 +1,88 @@
+<p id="23ee09f2-2a65-4c73-9301-57cce3f5287a" class="">Concisely, a monitor is a mutex and then some.</p><p id="6fc3cefc-913e-464a-9390-1c0a52028924" class="">Monitors are generally language-level constructs whereas mutex and semaphore are lower-level or OS-provided constructs.</p><p id="799d0055-3f70-4814-9cbb-96ffcf718e00" class="">
+</p><p id="59ecfed3-7b7b-4c3b-9b2a-d48c410fc28a" class="">Usually, in multi-threaded applications, a thread needs to wait for some program predicate to be true before it can proceed forward.</p><p id="e74a4977-4713-4166-803b-0644c69f45fb" class="">Think about a producer/consumer application. If the producer hasn&#x27;t produced anything the consumer can&#x27;t consume anything. So the consumer must wait on a predicate that lets the consumer know that something has indeed been produced.</p><p id="e70303c9-f549-450a-bd5e-934c9d60d0dd" class="">
+</p><p id="fd756796-4ef1-40b0-95d8-655e95b7077a" class="">What could be a crude way of accomplishing this? The consumer could repeatedly check in a loop for the predicate to be set to true.</p>
+<div class="code-wrapper">
+<pre id="448aca72-0216-4fb4-a8bc-9d8054c15456" class="code"><code id="code">void busy_wait_function() {
+    // acquire mutex
+    while (predicate is false) {
+      // release mutex
+      // acquire mutex
+    }
+    // do something useful
+    // release mutex
+}</code></pre>
+</div>
+<p id="aad4219c-96e6-4c0a-ae31-87579c9b4926" class="">Within the while loop we&#x27;ll first release the mutex giving other threads a chance to acquire it, and set the loop predicate to true. Before we check the loop predicate again, we make sure we have acquired the mutex.</p><p id="f5b58926-0aa6-4507-99a3-5c7b5c5e79f0" class="">This works but is an example of <strong>&quot;spin waiting&quot;</strong> which wastes a lot of CPU cycles. Let&#x27;s see how condition variables solve the spin-waiting issue.</p><p id="4e00c759-edd3-4761-ab19-7135eac5896e" class="">
+</p>
+<br>
+<p id="9bb33cc8-57cf-4269-9ed8-0701b5bd60d7" class=""><strong>Condition Variables</strong></p><p id="461e5342-8b8e-4aff-a3d8-27a9c78a4e56" class="">Conceptually, each condition variable exposes two methods <strong>wait()</strong> and <strong>signal()</strong>.</p><p id="c60b0f80-de3d-4fdf-a07f-4efd728c5caf" class="">As an example, say we have a consumer thread that checks for the size of the buffer, finds it empty and invokes <strong>wait()</strong> on a condition variable. The predicate in this example would be <strong>the size of the buffer</strong>. Now imagine a producer places an item in the buffer. The predicate, the size of the buffer, just changed and the producer wants to let the consumer threads know that there is an item to be consumed. This producer thread would then invoke <strong>signal()</strong> on the condition variable. The <strong>signal()</strong> method, when called on a condition variable, causes one of the threads that has been placed in the wait queue to get ready for execution.</p><p id="d0be6fa1-5863-4c00-9d6b-484ff599410f" class="">
+</p><p id="efd23757-a345-40db-b76c-e1fe31d0201f" class="">Let&#x27;s see how this translates into code.</p>
+<div class="code-wrapper">
+<pre id="7e7c8c13-37d0-4603-bb81-841392272544" class="code"><code id="code">void efficient_waiting_function() {
+    mutex.acquire()
+    while (predicate == false) {
+      cond_var.wait()
+    }
+    // Do something useful
+    mutex.release()     
+}
+
+void change_predicate() {
+    mutex.acquire()
+    set predicate = true
+    cond_var.signal()
+    mutex.release()
+}</code></pre>
+</div>
+<p id="cf4c4b77-f610-4c10-81cf-6c9a68e9b5ff" class="">
+</p><p id="29f0035e-c4c5-42a1-9135-e6cbc1cbbe61" class="">Let&#x27;s dry run the above code. </p><p id="2f86b0d1-1082-4cfe-93d3-8b9b615c4c20" class="">Say <strong>thread A</strong> executes <strong>efficient_waiting_function()</strong> first and finds the loop predicate is false and enters the loop.</p><p id="c39c3a38-58c9-44d6-b501-320b5852c9e7" class="">Next, <strong>thread A</strong> executes the statement <strong>cond_var.wait()</strong> and is placed in a wait queue.</p><p id="f78df2b6-beb5-49f9-8d98-ae4830949d7c" class="">At the same time <strong>thread A</strong> gives up the mutex.</p><p id="eed41482-0fe4-4545-9ca7-de08400c1247" class="">Now <strong>thread B</strong> comes along and executes <strong>change_predicate()</strong> method.</p><p id="64184de8-0d05-47bd-90e7-b5f17e0444c8" class="">Since the mutex was given up by <strong>thread A, thread B</strong> is able to acquire it and set the predicate to true.</p><p id="122ebe6c-fff4-4d28-bc88-b1de0821a862" class="">Next, it signals the condition variable <strong>cond_var.signal()</strong>.</p><p id="98a044ca-5277-45ae-bd75-fa3116e4da86" class="">This step places <strong>thread A</strong> into the ready queue but <strong>thread A</strong> doesn&#x27;t start executing until <strong>thread B</strong> has released the mutex.</p><p id="5f5b8ba2-9df7-4370-933b-50e3616f2a02" class="">
+</p>
+<br>
+<p id="af8b26a4-a03f-47e4-85a6-e583d9905050" class="">Note that the order of signaling the condition variable and releasing the mutex can be interchanged, but generally, the preference is to signal first and then release the mutex. However, the ordering might have ramifications on thread scheduling depending on the threading implementation.</p><p id="3c94fe8b-0e4e-48c9-a1db-0912ca2e49dd" class="">
+</p>
+<br>
+<p id="cc61b890-1139-43bf-99d5-0909914a0af1" class=""><strong>Why the while Loop</strong></p><p id="46ccb602-b0cc-438f-8d69-eadd81396fbe" class="">After all, the pseudocode could have been written as follows:</p>
+<div class="code-wrapper">
+<pre id="27eb647c-0d0d-4230-a6aa-8e733fe0d6fc" class="code"><code id="code">void efficient_waiting_function() {
+    mutex.acquire()
+    if (predicate == false) {
+      cond_var.wait()
+    }
+    // Do something useful
+    mutex.release()     
+}</code></pre>
+</div>
+<p id="3cbaa316-c98a-4211-b288-07589b3d8415" class="">We need a guarantee that once the variable <strong>cond_var</strong> is signaled, the predicate can&#x27;t be changed by any other thread and that the signaled thread becomes the owner of the monitor.</p><p id="0c7084f1-c67b-4e22-b205-0f844fb391b6" class="">For one, a different thread could get scheduled and change the predicate back to false before the signaled thread gets a chance to execute, therefore the signaled thread must again check the predicate once it acquires the monitor.</p><p id="67388d6c-f75b-4be5-ae8b-3e639c0ffc33" class="">Secondly, use of the loop is necessitated by design choices of monitors that we&#x27;ll explore in the next section.</p><p id="fb36e4bd-e71b-4a74-aa08-d538e719dea8" class="">Last but not the least, on POSIX systems, spurious or fake wakeups are possible (also discussed in later chapters) even though <strong>the condition variable has not been signaled and the predicate hasn&#x27;t changed.</strong></p><p id="d98e9ee8-bad2-421c-826f-5ead4ba36256" class=""><strong>The idiomatic and correct usage of a monitor dictates that the predicate always be tested for in a while loop.</strong></p><p id="a6db96e6-7a29-4d9a-a43d-abb4fcbde70a" class="">
+</p><p id="2749e06f-f54d-4627-b135-4a152de34c5f" class="">
+</p>
+<br>
+<p id="6d591a30-8c5e-4a13-a665-bde46562dcf8" class=""><strong>Monitor Explained</strong></p><p id="508f82fc-bb96-4843-b85d-8b3996697282" class="">A<strong> monitor is made up of a mutex and one or more condition variables.</strong></p>
+<p id="8d4e82be-d968-43a6-b394-dd663c2fe67c" class="">A single monitor can have multiple condition variables but not vice versa.</p><p id="c0e542ce-eaa3-4055-b162-4cba7e157225" class="">
+</p>
+<br>
+<p id="9488994c-7672-4bab-9a0b-187aeab36efc" class="">Another way to think about a monitor is to consider it as an entity having two queues or sets where threads can be placed.</p><p id="18ccacaf-0b39-49b5-b795-95a62908f983" class="">One is the <strong>entry set</strong> and the other is the <strong>wait set</strong>.</p><p id="5ef00a87-dfb0-44f7-9d7a-d9307333d6f8" class="">When a thread A <strong>enters</strong> a monitor, it is placed into the <strong>entry set</strong>.</p><p id="69c3cfc2-5908-4222-95ce-b8e68a95a9ed" class="">If no other thread <strong>owns</strong> the monitor, which is equivalent of saying no thread is actively executing within the monitor section, then thread A will <strong>acquire</strong> the monitor and is said to own it too.</p><p id="40c85060-1341-4d93-81b3-80a85046c074" class="">Thread A will continue to execute within the monitor section till it <strong>exits</strong> the monitor or calls <code>wait()</code> on an associated condition variable and be placed into the wait set.</p><p id="825bc2eb-0412-4af2-892e-c17946fd4ea3" class="">While thread A <strong>owns</strong> the monitor, no other thread will be able to execute any of the critical sections protected by the monitor.</p><p id="dd64713d-aea9-4ab9-9803-77a53c63fadc" class="">New threads requesting ownership of the monitor get placed into the <strong>entry set</strong>.</p><p id="b5bf4153-cd1c-4f78-8abe-63147f44b9fa" class="">Continuing with our hypothetical example, say another thread B comes along and gets placed in the <strong>entry set</strong> while thread A sits in the <strong>wait set</strong>.
+Since no other thread owns the monitor, thread B successfully acquires the monitor and continues execution.</p><p id="7f2f77f6-1a3f-4254-9fe4-dde661b9c953" class="">If thread B exits the monitor section without calling <code>notify()</code> on the condition variable, then thread A will remain waiting in the <strong>wait set</strong>.</p><p id="e69541ac-7421-4396-af14-aaef39392aad" class="">Thread B can also invoke <code>wait()</code> and be placed in the <strong>wait set</strong> along with thread A.</p><p id="63dea25e-92be-4519-a1ff-c48f428218ed" class="">This then would require a third thread to come along and call <code>notify()</code> on the condition variable on which both threads A and B are waiting.</p><p id="997e42e5-4c54-4fac-b0a4-3b37519171ad" class="">Note that only a single thread will be able to <strong>own</strong> the monitor at any given point and will have exclusive access to data structures or critical sections protected by the monitor.</p><p id="f43787fd-2ffa-49dd-8c22-29287d53fc45" class="">
+</p>
+<br>
+<p id="5836d76c-5a21-41e8-bf58-73319134262e" class="">You can think of a monitor as a <strong>mutex with a wait set</strong>. Monitors allow threads to exercise <strong>mutual exclusion</strong> as well as <strong>cooperation</strong> by allowing them to wait and signal on conditions.</p><p id="192a2e0e-4749-4e2e-a363-a3c508e7dcc5" class="">
+</p>
+<div class="text-center">
+    <img src="assets_env_image/7.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+<div class="text-center">
+    <img src="assets_env_image/8.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+<div class="text-center">
+    <img src="assets_env_image/9.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+<div class="text-center">
+    <img src="assets_env_image/10.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+<div class="text-center">
+    <img src="assets_env_image/11.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+<div class="text-center">
+    <img src="assets_env_image/12.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+<p id="811166d1-186c-432b-89bc-2e2b94231a03" class="">
+</p>

@@ -1,0 +1,112 @@
+<p>Whilst Django also will be a framework which be use inside of a project, it also is installed as a global package to
+	create new projects.</p>
+<p>Django is a Python package, which we can install globally on our system.</p>
+<p>But I recommend you install with virtualenv, for development environment.</p>
+<h3>Using a Virtual Environment</h3>
+<p>When working with Python (no matter if you then work with Django or not), it's typically recommended to use a virtual
+	environment for your projects. This allows you to install Python modules into the different environments and
+	hence have project-specific modules (instead of global modules).</p>
+<div class="code-wrapper">
+	<pre>
+    	<code id="code">
+mkvirtualenv --python3=python3.8 DjangoVirtual
+pip install Django
+	</code>
+    </pre>
+</div>
+<p>Now, once this is done, you can verify that it worked, by running <strong>django-admin</strong></p>
+<p>Type that into your command prompt or your terminal and hit enter.</p>
+<p>And you will see something like this:</p>
+<div class="code-wrapper">
+	<pre>
+    	<code id="code">
+(DjangoVirtual) (base) edyn@edyn:~$ django-admin
+
+Type 'django-admin help <subcommand>' for help on a specific subcommand.
+
+Available subcommands:
+
+[django]
+    check
+    compilemessages
+    createcachetable
+    dbshell
+    diffsettings
+    dumpdata
+    flush
+    inspectdb
+    loaddata
+    makemessages
+    makemigrations
+    migrate
+    runserver
+    sendtestemail
+    shell
+    showmigrations
+    sqlflush
+    sqlmigrate
+    sqlsequencereset
+    squashmigrations
+    startapp
+    startproject
+    test
+    testserver
+Note that only Django core commands are listed as settings are not properly configured (error: Requested setting INSTALLED_APPS, but settings are not configured. You must either define the environment variable DJANGO_SETTINGS_MODULE or call settings.configure() before accessing settings.).
+	</code>
+    </pre>
+</div>
+<p>which might look like an error when you look at it briefly, but which actually proves that Django tool was installed
+	correctly.</p>
+<p>Because here, it's basically telling you that just running Django admin like this is not supported. But that instead
+	you need to specify a sub command.</p>
+<p>And it's then gives you a long list of available sub commands.</p>
+<h3>Creating a Django Project</h3>
+<p>you can navigate to any folder of your choice.</p>
+<div class="code-wrapper">
+	<pre>
+    	<code id="code">
+cdvirtualenv
+django-admin startproject OpenStore
+	</code>
+    </pre>
+</div>
+<h3>IDE</h3>
+<p>My recommendation is a Visual Studio Code, is a free editor which is a way level for Mac OS, Windows and Linux.</p>
+<p>You can install extensions to help you with your specific project.</p>
+<p>Both extensions are technically optional but they will make you life as a Python developer a bit more convenient.</p>
+<div class="text-center">
+	<img src="assets_env_image/2.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<h4>Using "Pylance"</h4>
+<p>When using Visual Studio Code (recommended), you can use the "Pylance" extension to get better code checks and code
+	completion.</p>
+<p>To enable it in your Python / Django project, you can add a special setting to your your project-specific
+	configuration (i.e. your <strong>.vscode/settings.json</strong> file):</p>
+<div class="code-wrapper">
+	<pre>
+    	<code id="code">
+{
+ "python.languageServer": "Pylance",
+}
+	</code>
+    </pre>
+</div>
+<p>Now there's one other thing I wanna do and for that,</p>
+<div class="text-center">
+	<img src="assets_env_image/3.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<div class="text-center">
+	<img src="assets_env_image/4.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>The shortcut "crtl + Shift + i" is simply a little convenience which helps with formating Python code and which keeps your code easy to read and follows the PEP8 styling guidelines.</p>
+
+<hr>
+<h3>Fuentes:</h3>
+<ul>
+	<li><a href="https://docs.python-guide.org/starting/install3/linux/" class="link-info"
+			target="_blank">Installing Python</a></li>
+	<li><a href="https://docs.python.org/3/tutorial/venv.html" class="link-info" target="_blank">To Learn more about
+			virtual environments with Python</a></li>
+	<li><a href="https://www.python.org/dev/peps/pep-0008/" class="link-info" target="_blank">PEP8 Style Guide</a></li>
+	<li><a href="https://academind.com/tutorials/terminal-zsh-basics/" class="link-info" target="_blank">MacOs Terminal zsh</a></li>
+</ul>

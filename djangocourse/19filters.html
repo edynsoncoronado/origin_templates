@@ -1,0 +1,40 @@
+<p>Filters are basically adjustments or little transformations we can apply to values which were outputting with interpolation.</p>
+<p>Generally you wanna limit the work you do in the view and really restrict it to your core business logic which might be needed for fetching and transforming the data.</p>
+<p>And when it comes to formatting and outputting the data you might wanna do as much of that logic in the template.</p>
+<p>And filters are a great tool for that.</p>
+<strong>1) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        return render(request, 'challenges/challenge.html', {
+            'text': challenge_text,
+            <strong>'month_name': month
+            # 'month_name': month.capitalize()</strong>
+        })
+    except:
+        return HttpResponseNotFound("&lt;h1&gt;This month is not supported!&lt;/h1&gt;")
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/templates/challenges/challenges.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{{ month_name }} Challenge&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    <strong>&lt;h1&gt;{{ month_name|title }} Challenge&lt;/h1&gt;</strong>
+    &lt;h2&gt;{{ text }}&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+</div>
+<hr>
+<a href="https://docs.djangoproject.com/en/3.2/ref/templates/builtins/" class="link-info" target="_blank">Built-in template tags and filters</a>

@@ -1,0 +1,38 @@
+<p>You would have similar file names for different apps and Django would not be able to tell them apart.</p>
+<p>That's why it's a best practice to repeat the app name in the templates folder inside of the app folder.</p>
+<p>This is simply required to ensure that you never accidentally have clashing template file names across different apps.</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+response_data = render_to_string('<strong>challenges</strong>/challenge.html')
+        </code>
+    </pre>
+</div>
+<p>Now besides that, there is one other thing I want to highlight here and which I actually want to improve.</p>
+<p>Currently we're calling render_to_string to convert the template to a string and then we sent back that string as part of the HTTP response.</p>
+<p>There is nothing wrong with it but this is such a common pattern that Django actually has a <strong>shortcut</strong> for that.</p>
+<strong>1) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.urls import reverse
+
+<strong># from django.template.loader import render_to_string</strong>
+
+....
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        <strong>
+        return render(request, 'challenges/challenge.html')
+        # response_data = f"&lt;h1&gt;{challenge_text}&lt;/h1&gt;"
+        # response_data = render_to_string('challenges/challenge.html')
+        # return HttpResponse(response_data)
+        </strong>
+    except:
+        return HttpResponseNotFound("&lt;h1&gt;This month is not supported!&lt;/h1&gt;")
+        </code>
+    </pre>
+</div>

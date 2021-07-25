@@ -1,0 +1,308 @@
+<h3><strong>1) Hola Mundo</strong></h3>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from telegram import Bot
+from telegram.ext import Updater, CommandHandler
+
+TOKEN = 'YOUR TOKEN'
+
+def run(updater):
+    updater.start_polling()
+    updater.idle()
+
+def start(update, context):
+    name = update.message['chat']['first_name']
+    update.message.reply_text(f'Hola {name} yo soy tu bot.')
+
+if __name__ == '__main__':
+    my_bot = Bot(token=TOKEN)
+    updater = Updater(my_bot.token, use_context=True)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler('start', start))
+
+    run(updater)
+        </code>
+    </pre>
+</div>
+<div class="text-center">	
+    <img src="assets_env_image/5.png" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+
+<h3><strong>2) Echo</strong></h3>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def echo(update, context):
+    user_id = update.message['chat']['id']
+    text = update.message.text
+    context.bot.sendMessage(
+        chat_id=user_id,
+        parse_mode="MarkdownV2",
+        text=f'*Escribiste:*\n_{text}_'
+    )
+        </code>
+    </pre>
+</div>
+<div class="text-center">	
+    <img src="assets_env_image/6.jpg" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+
+<h3><strong>3) Keyboard</strong></h3>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def restart(update, context):
+    user_id = update.message['chat']['id']
+    context.bot.sendMessage(
+        chat_id=user_id,
+        parse_mode="HTML",
+        text='&lt;strong&gt;Seleccionar servicio a reiniciar:&lt;/strong&gt;',
+        reply_markup= {
+            'keyboard': [
+                [
+                    {'text': "Arin"},
+                    {'text': "Quantum"},
+                    {'text': "Ganemo"},
+                    {'text': "Yaroslab"}
+                ]
+            ],
+            'resize_keyboard': True,
+            'one_time_keyboard': True
+        }
+    )
+        </code>
+    </pre>
+</div>
+<div class="text-center">	
+    <img src="assets_env_image/7.jpg" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+
+<h3><strong>4) InlineKeyboard</strong></h3>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def api_pull(update, context):
+    keyboard = [
+        [
+            InlineKeyboardButton("addons_yaroslab", callback_data='addons_yaroslab'),
+            InlineKeyboardButton("addons_mrp_yaros", callback_data='addons_mrp_yaros')
+        ],
+        [
+            InlineKeyboardButton("version80", callback_data='version80')
+        ],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+
+def button(update, context):
+    query = update.callback_query
+    query.answer()
+    query.edit_message_text(text=query.data)
+
+
+if __name__ == '__main__':
+    ...
+    ...
+    dp.add_handler(CommandHandler('pull', api_pull))
+    dp.add_handler(CallbackQueryHandler(button))
+        </code>
+    </pre>
+</div>
+<div class="text-center">	
+    <img src="assets_env_image/8.jpg" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+
+<h3><strong>5) ConversationHandler</strong></h3>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def api_deploy(update, context) -> int:
+    reply_keyboard = [['Arin', 'Heidelberg', 'Yaroslab']]
+
+    update.message.reply_text(
+        'Hi! Choose your server:',
+        reply_markup=ReplyKeyboardMarkup(
+            reply_keyboard, one_time_keyboard=True, input_field_placeholder='Please choose:'
+        ),
+    )
+    return 0
+
+def stage_deploy(update, context) -> int:
+    reply_keyboard = [['addons_yaroslab', 'addons_mrp_yaros', 'version80']]
+    update.message.reply_text(
+        'Choose your repository.',
+        reply_markup=ReplyKeyboardMarkup(
+            reply_keyboard, one_time_keyboard=True
+        ),
+    )
+    return 0
+
+def cancel(update, context) -> int:
+    update.message.reply_text(
+        'Deploy cancelado!', reply_markup=ReplyKeyboardRemove()
+    )
+    return ConversationHandler.END
+
+
+if __name__ == '__main__':
+    ...
+    ...
+    deploy_handler = ConversationHandler(
+        entry_points=[CommandHandler('deploy', api_deploy)],
+        states={
+            0: [
+                MessageHandler(Filters.text & ~Filters.command, stage_deploy),
+            ],
+        },
+        fallbacks=[CommandHandler('cancel', cancel)],
+    )
+    dp.add_handler(deploy_handler)
+        </code>
+    </pre>
+</div>
+<strong>5.1) /deploy</strong>
+<div class="text-center">	
+    <img src="assets_env_image/9.jpg" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+<strong>5.2) Choose your repository</strong>
+<div class="text-center">	
+    <img src="assets_env_image/10.jpeg" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+<strong>5.3) Choose your repository</strong>
+<div class="text-center">	
+    <img src="assets_env_image/11.jpeg" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+<strong>5.4) /cancel</strong>
+<div class="text-center">	
+    <img src="assets_env_image/12.jpeg" class="rounded" alt="terminator" style="width: 30%;">
+</div>
+
+<hr>
+<h3>Full Code: &#128526;</h3>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackQueryHandler, ConversationHandler
+
+TOKEN = 'YOUR TOKEN'
+
+def run(updater):
+    updater.start_polling()
+    updater.idle()
+
+def start(update, context):
+    name = update.message['chat']['first_name']
+    update.message.reply_text(f'Hola {name} yo soy tu bot.')
+
+def echo(update, context):
+    user_id = update.message['chat']['id']
+    text = update.message.text
+    context.bot.sendMessage(
+        chat_id=user_id,
+        parse_mode="MarkdownV2",
+        text=f'*Escribiste:*\n_{text}_'
+    )
+
+def restart(update, context):
+    user_id = update.message['chat']['id']
+    context.bot.sendMessage(
+        chat_id=user_id,
+        parse_mode="HTML",
+        text='&lt;strong&gt;Seleccionar servicio a reiniciar:&lt;/strong&gt;',
+        reply_markup= {
+                'keyboard': [
+                    [
+                        {'text': "Arin"},
+                        {'text': "Quantum"},
+                        {'text': "Ganemo"},
+                        {'text': "Yaroslab"}
+                    ]
+                ],
+                'resize_keyboard': True,
+                'one_time_keyboard': True
+        }
+    )
+
+def api_pull(update, context):
+    keyboard = [
+        [
+            InlineKeyboardButton("addons_yaroslab", callback_data='addons_yaroslab'),
+            InlineKeyboardButton("addons_mrp_yaros", callback_data='addons_mrp_yaros')
+        ],
+        [
+            InlineKeyboardButton("version80", callback_data='version80')
+        ],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+
+def button(update, context):
+    query = update.callback_query
+    query.answer()
+    query.edit_message_text(text=query.data)
+
+def api_deploy(update, context) -> int:
+    reply_keyboard = [['Arin', 'Heidelberg', 'Yaroslab']]
+
+    update.message.reply_text(
+        'Hi! Choose your server:',
+        reply_markup=ReplyKeyboardMarkup(
+            reply_keyboard, one_time_keyboard=True, input_field_placeholder='Please choose:'
+        ),
+    )
+    return 0
+
+def stage_deploy(update, context) -> int:
+    reply_keyboard = [['addons_yaroslab', 'addons_mrp_yaros', 'version80']]
+    update.message.reply_text(
+        'Choose your repository.',
+        reply_markup=ReplyKeyboardMarkup(
+            reply_keyboard, one_time_keyboard=True
+        ),
+    )
+    return 0
+
+def cancel(update, context) -> int:
+    update.message.reply_text(
+        'Deploy cancelado!', reply_markup=ReplyKeyboardRemove()
+    )
+    return ConversationHandler.END
+
+if __name__ == '__main__':
+    my_bot = Bot(token=TOKEN)
+    updater = Updater(my_bot.token, use_context=True)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('restart', restart))
+    dp.add_handler(CommandHandler('pull', api_pull))
+    dp.add_handler(CallbackQueryHandler(button))
+    # dp.add_handler(MessageHandler(Filters.text, echo))
+
+    deploy_handler = ConversationHandler(
+        entry_points=[CommandHandler('deploy', api_deploy)],
+        states={
+            0: [
+                MessageHandler(Filters.text & ~Filters.command, stage_deploy),
+            ],
+        },
+        fallbacks=[CommandHandler('cancel', cancel)],
+    )
+    dp.add_handler(deploy_handler)
+
+    run(updater)
+        </code>
+    </pre>
+</div>
+
+<hr>
+<h3>Fuentes:</h3>
+<ul>
+    <li><a href="https://stackoverflow.com/a/41841237/4746720" class="link-info" target="_blank">Keyboard</a></li>
+    <li><a href="https://stackoverflow.com/questions/62342108/how-to-set-the-inline-keyboard-in-telegram-chatbot-to-other-function-in-python-t" class="link-info" target="_blank">InlineKeyboard</a></li>
+    <li><a href="https://dev.to/tbhaxor/making-telegram-bots-with-python-hid" class="link-info" target="_blank">Making Telegram Bots with Python</a></li>
+    <li><a href="https://medium.com/@goyoregalado/bots-de-telegram-en-python-134b964fcdf7" class="link-info" target="_blank">Bots de Telegram en python.</a></li>
+    <li><a href="https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/conversationbot.py" class="link-info" target="_blank">Conversationbot</a></li>
+    <li><a href="https://github.com/python-telegram-bot/python-telegram-bot/blob/master/examples/inlinekeyboard.py" class="link-info" target="_blank">Inlinekeyboard</a></li>
+</ul>

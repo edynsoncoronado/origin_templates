@@ -1,0 +1,40 @@
+<p>In this course, we're going to use the DTL (Django Template Language)  a lot.</p>
+<p>There are three important additions, which you'll see later, but which I want to introduce right now already:</p>
+<h4><strong>Accessing Dictionary Fields in Templates</strong></h4>
+<p>When accessing dictionary data in a template, you DON'T use this syntax:</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{{ myDictionary['some_key'] }}
+        </code>
+    </pre>
+</div>
+<p>Instead, you use the dot notation - as if it were a regular Python object:</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{{ myDictionary.some_key }}
+        </code>
+    </pre>
+</div>
+<p>This might look strange, but keep in mind, that the DTL is a custom-made language. It looks like Python, but ultimately it is NOT Python - it's a language parsed and executed by Django. Hence, its syntax can deviate - just as it does here.</p>
+<p>Again, you'll see this in action later in the course!</p>
+<h4><strong>Calling Functions in Templates</strong></h4>
+<p>Calling functions in templates also works differently than it does in Python.</p>
+<p>Instead of calling it, you use functions like regular variables or properties.</p>
+<p>I.e., instead of:</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{{ result_from_a_function() }}
+        </code>
+    </pre>
+</div>
+you would use
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{{ result_from_a_function }}
+        </code>
+    </pre>
+</div>

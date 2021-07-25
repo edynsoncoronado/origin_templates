@@ -1,0 +1,104 @@
+<p id="6f65dac2-6e9b-47ec-80c8-42b1ce14f450" class="">Logical follies committed in multithreaded code, while trying to avoid race conditions and guarding critical sections, can lead to a host of subtle and hard to find bugs and side-effects.</p><p id="3f984fd8-0421-40c5-8d5e-50f297321831" class="">Some of these incorrect usage patterns have their specific names and are discussed below.</p><p id="3ced40b7-abfb-415d-a7e1-f73415302bb1" class="">
+</p><ul id="ff1b2512-4491-48c2-8d8d-34bc08f2740b" class="bulleted-list"><li><strong>Deadlock</strong><p id="61ed06fd-6fc8-4d35-afc0-b05778eda675" class="">Deadlocks occur when two or more threads aren&#x27;t able to make any progress because the resource required by the first thread is held by the second and the resource required by the second thread is held by the first.</p></li></ul><ul id="0d4d212b-7438-469b-8bd1-47603c3285c6" class="bulleted-list"><li><strong>Liveness</strong><p id="4d6c5c2e-d34b-44f6-9815-49bdc5f3a5bd" class="">Ability of a program or an application to execute in a timely manner is called liveness.</p></li></ul><ul id="cd69f252-af87-4ffe-bcfd-a0b31bfb0761" class="bulleted-list"><li><strong>Live-Lock</strong><p id="b69f91b3-4cc0-4cda-8497-b57bca7ecae6" class="">A live-lock occurs when two threads continuously react in response to the actions by the other thread without making any real progress.</p><p id="55977e4f-c295-437b-b749-ff57a75fcf82" class="">The best analogy is to think of two persons trying to cross each other in a hallway. John moves to the left to let Arun pass, and Arun moves to his right to let John pass. Both block each other now. John sees he&#x27;s blocking Arun again and moves to his right and Arun moves to his left seeing he&#x27;s blocking John. They never cross each other and keep blocking each other. This scenario is an example of a live-lock.</p><p id="179bc7fc-24f5-4c2b-bbfc-79653ea0f338" class="">A process seems to be running and not deadlocked but in reality, isn&#x27;t making any progress.</p></li></ul><ul id="53864821-c9e6-4c45-8ac6-8354f7c40a2d" class="bulleted-list"><li><strong>Starvation</strong><p id="fadbb2a7-b9d5-4ca2-bf15-585536a04a31" class="">Other than a deadlock, an application thread can also experience starvation when it never gets CPU time or access to shared resources.</p><p id="d9df73db-4567-4925-8e7a-6b4a832db369" class="">Other greedy threads continuously hog shared system resources not letting the starving thread make any progress.</p></li></ul><p id="ab190e44-75ac-4a37-a7fd-bd1f1061ca53" class="">
+</p><p id="9d2402fc-8996-47c0-8415-885ca2dc91e6" class=""><strong>Deadlock Example</strong></p>
+<div class="code-wrapper">
+<pre id="54519f2b-570c-44fe-a7c1-cd3db2134382" class="code"><code id="code">void increment(){
+  acquire MUTEX_A
+  acquire MUTEX_B
+    // do work here
+  release MUTEX_B
+  release MUTEX_A
+    
+}
+
+
+void decrement(){
+  acquire MUTEX_B
+  acquire MUTEX_A
+    // do work here
+  release MUTEX_A
+  release MUTEX_B
+    
+}</code></pre>
+</div>
+<p id="1f579815-736c-4630-99bb-2218830def9b" class="">The above code can potentially result in a deadlock.</p>
+<div class="code-wrapper">
+<pre id="712e193d-dc36-472f-9f81-3a6971434ee2" class="code"><code>T1 enters function increment
+
+T1 acquires MUTEX_A
+
+T1 gets context switched by the operating system
+
+T2 enters function decrement
+
+T2 acquires MUTEX_B
+
+both threads are blocked now</code></pre>
+</div>
+<p id="5f0107f4-fa89-4722-a3c6-9d9ce24c38ca" class="">Thread T2 can&#x27;t make progress as it requires MUTEX_A which is being held by T1. Now when T1 wakes up, it can&#x27;t make progress as it requires MUTEX_B and that is being held up by T2. This is a classic text-book example of a deadlock.</p><p id="deb68bd0-7be5-4047-be8e-fc3fb3ae201b" class="">
+</p><p id="c31af999-6eff-4cd1-8ae5-305d52470a0d" class="">In this scenario, the deadlock occurs because the locks are being acquired in a nested fashion.</p>
+<div class="code-wrapper">
+<pre id="5a0c92e3-1409-4adc-8cbb-cae1900afcbe" class="code"><code>from threading import *
+import time
+
+def thread_A(lock1, lock2):
+    lock1.acquire()
+    print(&quot;{0} acquired lock1&quot;.format(current_thread().getName()))
+    time.sleep(1)
+    lock2.acquire()
+    print(&quot;{0} acquired both locks&quot;.format(current_thread().getName()))
+
+
+def thread_B(lock1, lock2):
+    lock2.acquire()
+    print(&quot;{0} acquired lock2&quot;.format(current_thread().getName()))
+    time.sleep(1)
+    lock1.acquire()
+    print(&quot;{0} acquired both locks&quot;.format(current_thread().getName()))
+
+
+if __name__ == &quot;__main__&quot;:
+
+    lock1 = Lock()
+    lock2 = Lock()
+
+    Thread(target=thread_A, args=(lock1, lock2)).start()
+    Thread(target=thread_B, args=(lock1, lock2)).start()</code></pre>
+</div>
+    <p id="c665fadc-4ee0-4c18-b9a4-13bcb61d17c2" class="">
+</p><p id="5f78aeac-f4b5-4caf-9979-1d6b7d10642b" class=""><strong>Reentrant Lock</strong></p><p id="dacad97e-8c42-44c0-88eb-e6539743632c" class="">Where we are using an ordinary Lock object that results in a deadlock.</p><p id="af31fd19-72e5-4a36-b5c5-e3ca751931f9" class="">This is best explained with an example.</p>
+<div class="code-wrapper">
+<pre id="0efc677f-18ad-44f5-89fd-32c278fbf6bc" class="code"><code>from threading import *
+
+
+if __name__ == &quot;__main__&quot;:
+  ordinary_lock = Lock()
+
+  ordinary_lock.acquire()
+  ordinary_lock.acquire()
+  
+  print(&quot;{0} exiting&quot;.format(current_thread().getName()))
+
+  ordinary_lock.release()
+  ordinary_lock.release()</code></pre>
+</div>
+  <p id="8fc5a65f-556c-4484-be3e-2ebdb0443d07" class="">
+</p><p id="50c6dabe-e5fa-4d4f-995b-9da9f9164083" class="">The above example works when we change the lock from an instance of Lock to RLock.</p><p id="93001232-9188-4753-9369-70a98c4423f7" class="">The latter allows reentry by a thread already holding the lock and is thus called a reentrant lock.</p>
+<div class="code-wrapper">
+<pre id="179f0bd2-0b95-447a-8edd-9704b5ef73d9" class="code"><code>from threading import *
+
+
+if __name__ == &quot;__main__&quot;:
+  ordinary_lock = RLock()
+  ordinary_lock.acquire()
+  ordinary_lock.acquire()
+  
+  print(&quot;{0} exiting&quot;.format(current_thread().getName()))
+
+  ordinary_lock.release()
+  ordinary_lock.release()</code></pre>
+ </div>
+<div class="code-wrapper">
+  <pre id="6646e8b6-c3e2-468f-8351-322336611eae" class="code"><code>Output:
+MainThread exiting</code></pre>
+</div>

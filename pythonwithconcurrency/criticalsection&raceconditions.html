@@ -1,0 +1,49 @@
+<p id="d2050f73-8420-4404-a99a-6f10925905b3" class="">This lesson exhibits how incorrect synchronization in a critical section can lead to race conditions and buggy code.</p><p id="b9b00f80-efbc-4333-b32e-7cd5ed16a2b6" class="">
+</p><p id="a5fa18cf-309d-4e95-98dc-ac224e303bbd" class="">A program is a set of instructions being executed and multiple threads of a program can be executing different sections of the program code.</p><p id="6c52b6a6-d457-488a-a443-f79af4cf4a4d" class="">However, caution should be exercised when threads of the same process attempt to simultaneously execute the same portion of code.</p><p id="c2d0e371-0cf0-4bab-a779-137a501c3913" class="">
+</p><p id="2c307177-28ea-4099-833a-692706bdf93c" class=""><strong>Critical Section</strong></p><p id="4b317695-6722-4f02-9959-6aee32495ca5" class="">Critical section is any piece of code that has the possibility of being executed concurrently by more than one thread of the application and exposes any shared data or resources used by the application for access.</p><p id="0a855627-1953-45b8-aede-5135375b1dcf" class="">
+</p><p id="da303656-3c40-443d-8640-d6b702e8ff80" class=""><strong>Race Condition</strong></p><p id="2794b5a6-a955-4214-9619-a46eed00888b" class="">Race conditions happen when threads run through critical sections without thread synchronization. The threads &quot;race&quot; through the critical section to write or read shared resources and depending on the order in which threads finish the &quot;race&quot;, the program output changes.</p><p id="6b833374-63df-48da-92ad-3fe367854e59" class="">
+</p><p id="35b73e5e-f4ed-4abc-a1fa-9d9e6c807186" class="">In a race condition, threads access shared resources or program variables that might be worked on by other threads at the same time causing the application data to be inconsistent.</p><p id="015ae49d-9cb7-4bec-b3b7-53cc774c5f92" class="">
+</p><p id="f82dc413-8304-498a-aa96-bd24f49c1333" class=""><strong>Example Thread Race</strong></p><p id="c30a778a-c04c-4435-95e1-e8301923b28d" class="">We have two threads working on the same variable rand_int.</p><p id="48c97486-3e9b-4ee1-807c-126d4e4554d1" class="">The modifier thread perpetually updates the value of rand_int in a loop while the printer thread prints the value of rand_int only if rand_int is divisible by 5.</p><p id="0d22fd7a-cf36-4990-aace-9f0a5f1d67b7" class="">If you let this program run, you&#x27;ll notice some values get printed even though they aren&#x27;t divisible by 5 demonstrating a thread-unsafe version of test-then-act.</p><p id="df12b137-a3da-4957-af66-70bf47c1a75b" class="">
+</p><p id="8160ef5c-a428-4d7c-967a-a46fcc0b7deb" class="">The fix is presented below where we guard the read and write of the rand_int variable using a Lock object.</p>
+<div class="code-wrapper">
+<pre id="9fcf3395-e474-4788-a001-d42d3bc471ce" class="code"><code id="code">from threading import *
+import random
+import time
+
+rand_int = 0
+lock = Lock()
+
+def updater():
+    global rand_int
+    global lock
+    while 1:
+        with lock:
+          rand_int = random.randint(1, 9)
+
+
+def printer():
+    global rand_int
+    global lock
+    while 1:
+
+        with lock:
+          # test
+          if rand_int % 5 == 0:
+              if rand_int % 5 != 0:
+                  # and act
+                  print(rand_int)
+
+
+if __name__ == &quot;__main__&quot;:
+    Thread(target=updater, daemon=True).start()
+    Thread(target=printer, daemon=True).start()
+
+    # Let the simulation run for 5 seconds
+    time.sleep(5)</code></pre>
+</div>
+<p id="3729fa7b-fdbf-4e71-a1b6-dc80909ff072" class="">
+</p><p id="cee7cfc2-c0e6-4532-aaf8-e61ccb93a48c" class="">Below is a pictorial representation of what a race condition looks like.</p>
+<div class="text-center">
+    <img src="assets_env_image/3.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+</p>

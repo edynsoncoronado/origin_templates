@@ -1,0 +1,40 @@
+<p>Runserver, is a built in sub command, supported by <strong>manage.py</strong> which will simply start such a preview development server for this project.</p>
+<div class="code-wrapper">
+    <pre>
+	    <code id="code">
+python manage.py runserver
+        </code>
+    </pre>
+</div>
+<p>So if hit enter here, this now starts up a server which we can visit at this address which is printed here.</p>
+<div class="code-wrapper">
+    <pre>
+	    <code id="code">
+(DjangoVirtual) [~/.virtualenvs/DjangoVirtual/OpenStore]$ python manage.py runserver                                                                                                           
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 18 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run 'python manage.py migrate' to apply them.
+May 25, 2021 - 17:23:59
+Django version 3.2.3, using settings 'OpenStore.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+[25/May/2021 17:24:07] "GET / HTTP/1.1" 200 10697
+[25/May/2021 17:24:07] "GET /static/admin/css/fonts.css HTTP/1.1" 200 423
+[25/May/2021 17:24:07] "GET /static/admin/fonts/Roboto-Light-webfont.woff HTTP/1.1" 200 85692
+[25/May/2021 17:24:07] "GET /static/admin/fonts/Roboto-Bold-webfont.woff HTTP/1.1" 200 86184
+[25/May/2021 17:24:07] "GET /static/admin/fonts/Roboto-Regular-webfont.woff HTTP/1.1" 200 85876
+Not Found: /favicon.ico
+[25/May/2021 17:24:08] "GET /favicon.ico HTTP/1.1" 404 2113
+        </code>
+    </pre>
+</div>
+<p>So we can go to our browser and even enter that IP or localhost colon 8000, both works.</p>
+<div class="text-center">
+	<img src="assets_env_image/6.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>And one you do that you should see, a starting page like this, which simply proves that development server is up and running and you loaded your project successfully.</p>
+<p>One side note by the way, this SQL3 free file which was created here is a little dummy database which we're also I'm going to use throughout.</p>

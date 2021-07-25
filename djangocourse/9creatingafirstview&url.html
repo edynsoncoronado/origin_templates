@@ -1,0 +1,106 @@
+<p>When the client, so you using the browser, sends a request to a server running Python Django, then on that server, Python checks the URLconfig or possibly, typically, multiple URLconfigs. One for the project and one for the app which it's then forwarded to.</p>
+<div class="text-center">
+    <img src="assets_env_image/12.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>Then you might have multiple view functions.</p>
+<p>And depending on the URL that was entered, one specific view function will be executed.</p>
+<p>And that view can then do something with the request if it needs to extract data, for example but it then generates a response and sends back that response to the client.</p>
+<div class="text-center">
+    <img src="assets_env_image/13.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<ul>
+    <li>
+        <strong>1) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.shortcuts import render
+from django.http import HttpResponse
+
+# Create your views here.
+def january(request):
+    return HttpResponse("Eat no meat for the entire month!")
+
+def february(request):
+    return HttpResponse("Walk for at least 20 minutes every day!")
+        </code>
+    </pre>
+</div>
+    </li>
+    <li>
+        <strong>2) monthly_challenges/challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("january", views.january),
+    path("february", views.february),
+]
+        </code>
+    </pre>
+</div>
+    </li>
+    <li>
+        <strong>3) monthly_challenges/monthly_challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('challenges/', include("challenges.urls"))
+]
+        </code>
+    </pre>
+</div>
+    </li>
+</ul>
+<p>We could do this for all months. But this, of course, will be quite cumbersome. We have to add 12 entries here to URL patterns and we have to add 12 views. And the good thing in this demo here is that we know how many entries we need. In a lot of other applications, you wouldn't have that luxury.</p>
+<p>Now, it would be better if we could instead kind of set this up dynamically.</p>
+<p>That we set up one URL pattern, which actually is dynamic regarding the concrete value here, if that's January, February, March that it's dynamic regarding that and that then we also have one view function, which is triggered for this dynamic URL, and which is able to find out with which concrete value the URL was populated, to then return the different response based on that value.</p>
+<ul>
+    <li>
+        <strong>1)  monthly_challenges/challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("&lt;month&gt;", views.monthly_challenge)
+]
+        </code>
+    </pre>
+</div>
+    </li>
+    <li>
+        <strong>2) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound
+
+# Create your views here.
+def monthly_challenge(request, month):
+    challenge_text = None
+    if month == 'january':
+        challenge_text = 'Eat no meat for the entire month!'
+    elif month == 'february':
+        challenge_text = 'Walk for at least 20 minutes every day!'
+    else:
+        return HttpResponseNotFound("This month is not supported!")
+    return HttpResponse(challenge_text)
+        </code>
+    </pre>
+</div>
+    </li>
+</ul>

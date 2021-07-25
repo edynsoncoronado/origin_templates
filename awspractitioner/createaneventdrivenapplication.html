@@ -1,0 +1,92 @@
+<p id="b962bf8c-9a70-4866-9deb-61c7ebbff0e0" class="">So event driven applications are where an event in one resource leads to an event and another one.</p><p id="290ecdfb-7502-4001-a345-3d970aa1709d" class="">
+</p><p id="58b7d6df-a7ab-49a3-8006-02334d72f342" class="">So this is going to be us at the bottom here and we&#x27;re going to create an SNS topic.</p><p id="1414738b-6a7c-4907-bfa4-1ef844a87a47" class="">And what we&#x27;re going to do is submit a notification to the topic through the AWS management console.</p><p id="e1aaaef8-ea85-4b38-ac64-982d52471a5e" class="">Now, the SNS topic is going to be subscribed to an Amazon SQS queue.</p><p id="02d561f3-be77-4117-9eab-ac3c937cc58e" class="">So the message will actually get put into the queue.</p><p id="1b830244-b3dd-420b-89f7-c6d377e93a01" class="">The queue is then going to trigger a Lambda target.</p><p id="70157696-1669-44e3-93a4-8987f7910976" class="">So it&#x27;s then going to process that message from the queue and what it&#x27;s going to do is simply write an events into CloudWatch logs.</p><p id="84f679c1-e44b-4e43-9cd2-e6c65b466a76" class="">So whatever message we put in the SNS topic, we should then find in CloudWatch logs.</p><p id="e34aeea5-8644-41fa-bef6-3d40a13b5541" class="">
+</p>
+<div class="text-center">
+	<img src="assets_env_image/21.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="354468d0-536c-49f6-b7d3-1f8f335bdf0c" class="">
+</p><p id="e0416fae-06b2-4b13-ba6b-80509ccbf1c8" class="">1) The first thing we&#x27;re going to create is the Lambda function.</p>
+<div class="text-center">
+	<img src="assets_env_image/22.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<br>
+<div class="text-center">
+	<img src="assets_env_image/23.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="3e815d87-de3c-47dd-96a2-9cbe658ce0c9" class="">2) In SQS we&#x27;re going to create a queue and I&#x27;m simply going to call it MySimple Queue.</p>
+<div class="text-center">
+	<img src="assets_env_image/24.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="4ecb7279-2163-4433-b537-2a2e8999637e" class="">3) We want to set up a trigger so that the queue will trigger the Lambda function.</p>
+<div class="text-center">
+	<img src="assets_env_image/25.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="0bd92948-efa9-49cb-b988-26bca0dbdde2" class="">And we get this error message and it&#x27;s telling us that the execution role for Lambda doesn&#x27;t have</p><p id="1bacf4e8-37b4-4508-856e-b8241f49d01e" class="">the required permissions.</p><p id="344d8c32-b3ed-4a3c-86f4-dfd4daa20e1f" class="">
+</p><p id="4f83f463-6545-4f2f-959e-1854a9678d32" class="">4) Go back to our Lambda function, click on configuration, permissions and then click on this bit here where we&#x27;ve got the execution role.</p>
+<div class="text-center">
+	<img src="assets_env_image/26.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="5b0e27f6-c2e5-4f37-8d32-4bdba7015250" class="">5) We need some permissions to SQS. So we click on attach policies.</p>
+<div class="text-center">
+	<img src="assets_env_image/27.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<br>
+<div class="text-center">
+	<img src="assets_env_image/28.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p>Now, if we have a look at this policy, we'll see that we have that SQS received message action and that's allowed.</p>
+<div class="text-center">
+	<img src="assets_env_image/29.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="356558e0-dd67-4ac4-9344-95de6da647cc" class="">6) So coming back to SQS, let&#x27;s just try and save this one again.</p>
+<div class="text-center">
+	<img src="assets_env_image/30.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="293a5c85-8fff-423d-9b39-84a9f100482c" class="">7) So what we can do is try and send a message.</p>
+<div class="text-center">
+	<img src="assets_env_image/31.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="c880322b-4e19-466b-8c8b-da17c3bf0ce6" class="">So we&#x27;ve submitted a message to the queue and what should happen is it should trigger our Lambda function and then we should see something in CloudWatch logs.</p><p id="e5b03f7f-1642-4ebf-853e-9f914d04bcf3" class="">
+</p><p id="95dcf6a2-4eaf-4d31-b1a5-b9c9149327e2" class="">8) Now, if you see a log stream here, that&#x27;s all good. That means that your Lambda function has successfully processed that message from the queue, it&#x27;s been invoked.</p>
+<div class="text-center">
+	<img src="assets_env_image/32.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="f817e61d-3173-4386-9de7-3631b91feecb" class="">
+</p><p id="6dedaef1-d578-446e-a161-4fd2670c72af" class="">9) So now we need to go to SNS and we&#x27;re going to set up a notification for our topic.</p><p id="91c11172-9587-4101-855a-169e7a8a0501" class="">In SNS on the left here, I&#x27;m just going to expand, click on topics and let&#x27;s create a topic.</p>
+<div class="text-center">
+	<img src="assets_env_image/33.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<br>
+<div class="text-center">
+	<img src="assets_env_image/34.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="4d499796-7530-4138-bab8-4a0ca7387ef0" class="">10) Also need a subscription.</p>
+<div class="text-center">
+	<img src="assets_env_image/35.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="588e5277-9315-4013-b1d0-3473dabeada0" class="">And now we need to go back over to SQS.</p><p id="95164e4d-bbde-499a-a59c-7bfe7623ee79" class="">In SQS, I&#x27;m going to go back up to MySimpleQueue, SNS subscriptions.</p>
+<div class="text-center">
+	<img src="assets_env_image/36.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<br>
+<div class="text-center">
+	<img src="assets_env_image/37.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<br>
+<div class="text-center">
+	<img src="assets_env_image/38.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="4aba5851-eaf7-459d-88c1-ac457b816841" class="">
+</p><p id="a16ea6d5-9708-478b-947f-f1f9c562d208" class="">11) So let&#x27;s go back to SNS and submit a notification</p>
+<div class="text-center">
+	<img src="assets_env_image/39.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<br>
+<div class="text-center">
+	<img src="assets_env_image/40.png" class="rounded" alt="" style="width: 80%;">
+</div>
+<p id="ccafab52-734c-4e0e-a931-37e60d60ceba" class="">We just submitted an SNS topic.</p><p id="63ec44a7-09c7-4507-9b0d-ac919cf4554d" class="">The SQS queue is subscribed to the topic so the message should end up in the queue.</p><p id="4e7c4e44-fbfc-4fca-b06d-8b2bb575723f" class="">Then the queue triggers a Lambda function which processes that information and puts an entry in</p><p id="f26e81d8-31e6-47a8-b08c-e5d6f46f2314" class="">CloudWatch logs.</p><p id="4756736f-2a74-44f6-8bf6-721664bced9b" class="">
+</p><p id="6f46ce42-ac58-482d-9cf2-571e911fb458" class="">12) So all that&#x27;s left is to go to CloudWatch logs and see if it&#x27;s there.</p>
+<div class="text-center">
+	<img src="assets_env_image/41.png" class="rounded" alt="" style="width: 80%;">
+</div>

@@ -1,0 +1,33 @@
+<p>Django projects embrace a modular structure.</p>
+<p>So a Django project often consists of multiple modules that make up the project.</p>
+<p>Now in Django world, those modules are not called modules, though, but apps.</p>
+<div class="code-wrapper">
+    <pre>
+	    <code id="code">
+python manage.py startapp challenges
+        </code>
+    </pre>
+</div>
+<p>This will create a new sub-folder, challenges, which also contains a bunch of py files.</p>
+<p>So this OpenStore folder inside of the created OpenStore project, basically holds the project-wide configuration for this project.</p>
+<p>This will create a new sub-folder, challenges, which also contains a bunch of py files.</p>
+<div class="text-center">
+	<img src="assets_env_image/7.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>Let's say we're building a shop, so we got a feature for displaying products, and we got a feature for handling the cart, and the checkout process.
+</p>
+<p>Those features would be represented by apps in this project.</p>
+<p>To split our code and logic by feature into these different apps, into these different modules, that's the idea.</p>
+<p>So we, for example, created the challenges app but we could create more apps in one and the same project.
+</p>
+<p>So all these apps would co-exist in this OpenStore project and apps stand for simply are the building blocks that form this overall project.</p>
+<p>We could translate the name app here with module, since app sounds like a big standalone thing. It actually turns out that even a part of a bigger application could be a app in the Django world.</p>
+<p>Let's say you build your own online shop.</p>
+<p>So like Amazon, but without Video,Music, and so on, just the shop.</p>
+<p>Now this could be one big app and you could create one app in one project if you're building this with Django, but to keep your code maintainable and maybe all the reuse code with other projects, your alternatively could also create apps in your shop project, where one app is about displaying products and product details to customers, another app is for the shopping cart and the checkout process, and for administrating the products you might have another app.</p>
+<div class="text-center">
+	<img src="assets_env_image/8.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>So apps don't have to be those big standalone products which you could offer to your customers.</p>
+<p>A app in Django can also just be one small module of a bigger product, a bigger website you're building.</p>
+<p>For bigger projects, this can be very useful.</p>

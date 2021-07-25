@@ -1,0 +1,22 @@
+<p id="300e9b6b-69b5-409b-b578-b83d15f15825" class="">We discussed the abstract concept of a monitor in the previous section. Now let&#x27;s discuss the various designs for monitors.</p><p id="96229bd5-2a0e-4f45-9c40-283a651862ca" class="">
+</p>
+<br>
+<p id="807e36e2-a385-40d9-a097-6ea3fab62425" class=""><strong>Mesa Monitors</strong></p><p id="67202891-a109-493b-b8fe-30c571798c75" class="">Once the asleep thread is signaled and woken up, you may ask why does it needs to check for the condition being false again if the signaling thread must have just set the condition to true?</p>
+<div class="code-wrapper">
+<pre id="c7b33e92-e850-4b90-aa4a-af3916ac2d5c" class="code"><code id="code">while( condition == false ) {
+    condVar.wait();
+}</code></pre>
+</div>
+<p id="bf514180-460a-4a27-bd84-7427e57a02bb" class="">In <strong>Mesa monitors</strong> - Mesa being a language developed by <strong>Xerox researchers in the 1970s</strong> - it is possible that in the time gap between when thread B calls <strong>notify()</strong> and releases its mutex and the instant at which the asleep thread A wakes up and reacquires the mutex, <strong>the predicate is changed back to false by another thread different than the signaler and the awoken threads!</strong></p><p id="4b88e6a8-99c0-4d70-995c-7ae140081aae" class="">The woken up thread competes with other threads to acquire the mutex once the signaling thread B empties the monitor.</p><p id="e1773117-5f22-4e3f-98e3-6a60e4909068" class="">On signaling, thread B doesn&#x27;t give up the monitor just yet; rather it continues to own the monitor until it exits the monitor section.</p><p id="5e0d9903-c156-42ba-9d61-01f31dbe14b5" class="">
+</p>
+<br>
+<p id="8e8852d9-b7ec-470b-8386-c74c68cf1b27" class=""><strong>Hoare Monitors</strong></p><p id="731be797-fbb2-428f-8f30-b90ef6924e4d" class=""><strong>Hoare being one of the original inventor of monitors</strong> - the signaling thread B <strong>yields</strong> the monitor to the woken up thread A and thread A enters the monitor while thread B sits out.</p><p id="ad48139a-3c16-4649-9fad-0de43c0d303e" class="">This guarantees that <strong>the predicate will not have changed</strong> and instead of checking for the predicate in a while loop, an <strong>if-clause would suffice</strong>.</p><p id="21341dab-ebdd-44ef-9036-fc06c889879a" class="">The woken-up/released thread A immediately starts execution when the signaling thread B signals that the predicate has changed.</p><p id="21fa09ba-1e37-4851-8300-fd04be83daeb" class=""><strong>No other thread gets a chance to change the predicate since no other thread gets to enter the monitor.</strong></p><p id="a7b12621-2c80-432e-9b0f-889d95e184ff" class="">
+</p>
+<br>
+<p id="dd68d8da-57e9-46ca-ab0a-041481587974" class="">Mesa monitors are more efficient than Hoare monitors.</p><p id="e36264f2-61d4-48f1-97fa-52251ee3f1d4" class="">
+</p>
+<br>
+<p id="4aa9a608-bbe4-491f-b145-9917d0023f12" class="">Java, in particular, subscribes to Mesa monitor semantics and since Python&#x27;s threading module is based on Java&#x27;s threading model, therefore it too in turn utilizes the Mesa semantics for monitors. </p><p id="444d4ce8-4934-4259-b72f-08dadf16131c" class="">Thus the developer is always expected to check for condition/predicate in a while loop.</p><p id="dd0d0516-c4ff-46a0-a1cc-162553fff663" class="">
+</p>
+<hr>
+<a href="https://samuelsorial.tech/mesa-vs-hoare-semantics" class="link-info" target="_blank">Mesa vs Hoara semantics</a>

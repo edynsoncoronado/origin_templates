@@ -1,0 +1,90 @@
+<p id="64ce9853-7942-4764-87fe-717593d7ca51" class="">Threads can give the illusion of multitasking even though the CPU is executing only one thread at any given point in time.</p><p id="47c751e1-58c6-4710-934f-8dd1e79668ea" class="">With advances in hardware technology, it is now common to have multi-core machines.</p><p id="dbfbaaee-4dc9-4ed1-9cfc-0c1e89848e99" class="">However, the standard version of Python is limited in its ability to leverage multiple processors in a system when running a multithreaded-program.</p><h2 id="72756d74-b92c-4cc4-af2a-14b4f56469da" class="">Benefits of Threads</h2><ol id="8991a217-ad33-48ea-8474-292ee0dfe2bd" class="numbered-list" start="1"><li><strong>Higher throughput,</strong> though in some pathetic scenarios it is possible to have the overhead of context switching among threads steal away any throughput gains and result in worse performance than a single-threaded scenario.<p id="3037e9ce-f6b6-4707-9059-355e52e9a405" class="">Also, multithreaded programs can utilize multiple cores in a machine but a single-threaded program limits itself to a single core even if multiple are available.</p></li></ol><ol id="8f00ba1b-4c04-4c28-b37c-599ced160a84" class="numbered-list" start="2"><li><strong>Responsive applications</strong> that give the illusion of multitasking on single core machines.</li></ol><ol id="4736a213-9ce2-4803-9eac-2257b02c94fb" class="numbered-list" start="3"><li><strong>Efficient utilization of resources.</strong> Note that thread creation is lightweight in comparison to spawning a brand new process.<p id="73653b3a-bb70-4049-be6c-78415cfc2af3" class="">Moreover, because all threads within a process share the same address space, they need not use shared memory, unlike processes.</p></li></ol><p id="cc274ca1-bf2e-482f-8b23-e690e7bf0987" class="">
+</p><p id="c2757f04-e17c-4150-9d87-a77911583101" class=""><strong>Performance Gains via Multi-Threading</strong></p><p id="ff9fe20b-d806-4041-8e09-1df6e3cddb8f" class="">The task is to <strong>compute the sum of all the integers from 0 to 300000000 (30 million).</strong></p><ul id="63a3c89b-a740-4cdd-8537-544c7226f7ec" class="bulleted-list"><li>In the first scenario, we have a single thread doing the summation.</li></ul><ul id="b5758b89-d8fe-4131-9b35-696876815a89" class="bulleted-list"><li>The second scenario, we split the range into two parts and have one thread sum for each range. Once both the threads are complete, we add the two half sums to get the combined sum.</li></ul><ul id="5d5b974c-713c-430d-9b97-a2dde1f9d486" class="bulleted-list"><li>Finally, we repeat the previous exercise using processes instead of threads. We measure the time taken for each scenario and print it.</li></ul><p id="6d3bc9ea-058b-4a7d-b865-77aa105d84de" class="">
+</p>
+<div class="code-wrapper">
+<pre id="6b5a9e61-0250-4ce3-88ce-56415f3849fd" class="code"><code id="code">import time
+import multiprocessing
+
+
+class SumUpClass:
+
+    def __init__(self):
+        self.counter = 0
+
+    def add_integers(self, start, end):
+        for i in range(start, end + 1):
+            self.counter += i
+
+    def get_counter(self):
+        return self.counter
+
+
+def single_thread():
+    obj = SumUpClass();
+    start = time.time();
+    obj.add_integers(1, 30000000)
+    end = time.time() - start
+    print(&quot;single threaded took : {} seconds and summed to {}&quot;.format(end, obj.counter))
+
+
+def multiple_threads():
+    obj1 = SumUpClass()
+    obj2 = SumUpClass()
+    start = time.time()
+
+    t1 = Thread(target=obj1.add_integers, args=(1, 15000000,))
+    t2 = Thread(target=obj2.add_integers, args=(15000001, 30000000))
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
+    combined_sum = obj1.counter + obj2.counter
+    end = time.time() - start
+    print(&quot;multiple threads took : {} seconds and summed to {}&quot;.format(end, combined_sum))
+
+
+def single_process(obj1, start, end):
+    obj1.add_integers(start, end)
+
+def multiple_processes():
+    BaseManager.register(&#x27;SumUpClass&#x27;, SumUpClass)
+    manager = BaseManager(address=(&#x27;127.0.0.1&#x27;, 63333))
+    manager.start()
+
+    obj1 = manager.SumUpClass()
+    obj2 = manager.SumUpClass()
+    start = time.time()
+
+    p1 = Process(target=single_process, args=(obj1, 1, 15000000,))
+    p2 = Process(target=single_process, args=(obj2, 15000001, 30000000,))
+
+    p1.start()
+    p2.start()
+    
+    p1.join()
+    p2.join()
+
+    combined_sum = obj1.get_counter() + obj2.get_counter()
+    end = time.time() - start
+    print(&quot;multiple processes took : {} seconds and summed to {}&quot;.format(end, combined_sum))
+    manager.shutdown()
+
+if __name__ == &quot;__main__&quot;:
+    print(&quot;System has {0} CPUs&quot;.format(multiprocessing.cpu_count()))
+    single_thread()
+    multiple_threads()
+    multiple_processes(</code></pre>
+    </div>
+<div class="text-center">
+    <img src="assets_env_image/0.png" class="rounded" alt="..." style="width: 80%;">
+</div>
+    <p id="01a3ecfa-0a1f-4656-9314-ba9139b14156" class="">The results are interesting and counterintuitive. We would expect the multithreaded scenario to perform better than the single-threaded one since two threads can work in parallel if the system has at least two CPUs. The relatively poor performance in comparison to the single-threaded scenario can be explained by (standard) Python&#x27;s Achilles’ heel, the Global Interpreter Lock, an entity within the Python framework that allows a single thread to execute even in the presence of more than one idle CPUs.</p><p id="43421046-2273-4137-8a8b-e1d3abe7213e" class="">Multithreaded scenarios may not experience any performance gains in case of CPU-intensive tasks such as the one in our example because threads don&#x27;t execute in parallel and in fact incur an additional cost of management and coalescing partial results.</p><p id="72f1fccf-4edc-46e6-9a25-c6f1d2e1b21e" class="">With multiple processes we can expect each process to be scheduled onto a separate CPU and work in parallel. However, there&#x27;s the additional overhead of creating and tearing down processes, which is higher than doing the same for threads. Additionally, we utilize Python&#x27;s inter-process communication machinery, which uses the proxy-pattern and adds network latency to the multiprocessing scenario.</p><p id="f299e204-f022-47e1-a794-c77bdd4ae61b" class="">
+</p><h2 id="1ac42060-f06e-4e11-85c8-36baa300de98" class="">Problems with Threads</h2><p id="7edb7ce6-1c9c-4c46-b0a2-2a4c30796f92" class="">There&#x27;s no free lunch in life.</p><p id="0d5a002e-1332-4ab9-b6f6-327a00bc6de8" class=""><strong>1) It&#x27;s usually very hard to find bugs, </strong>Bugs can&#x27;t be reproduced consistently and may depend on the sequence in which various threads execute.</p><p id="01e129a1-3aa5-46b5-beba-12292d5a0122" class=""><strong>2) Higher cost of code maintenance</strong> since the code inherently becomes harder to reason about.</p><p id="7a89a503-bd50-4e9f-b3b2-66827a645ee1" class=""><strong>3) Increased utilization of system resources.</strong> Creation of each thread consumes additional memory, CPU cycles for book-keeping, and waste of time in context switches.</p><p id="a1fa96a6-6f9b-4323-8b45-bff41c3e2862" class=""><strong>4) Programs may experience slowdown</strong> as coordination amongst threads comes at a price. Acquiring and releasing locks adds to program execution time.</p><h2 id="56ae7d1f-9080-4935-8b64-fea40a6836ce" class="">Problems with Threads</h2><p id="23c369f2-0111-46fe-93c7-ea713b74b3ef" class="">There&#x27;s no free lunch in life. The premium for using threads manifests in the following forms:</p><ol id="ed4de855-ec1a-414f-9d92-d51a34d712de" class="numbered-list" start="1"><li><strong>It&#x27;s usually very hard to find bugs</strong>, some that may
+only rear their heads in production environments. Bugs can&#x27;t be
+reproduced consistently and may depend on the sequence in which various
+threads execute.</li></ol><ol id="29d2186c-a8c5-4c59-831a-e524d7c157cd" class="numbered-list" start="2"><li><strong>Higher cost of code maintenance</strong> since the code inherently becomes harder to reason about.</li></ol><ol id="22b3fb65-13fd-498d-942e-a08d999f56ec" class="numbered-list" start="3"><li><strong>Increased utilization of system resources</strong>. Creation of each thread consumes additional memory, CPU cycles for book-keeping, and waste of time in context switches.</li></ol><ol id="abe8bcbc-add8-47bc-ac99-61c4ed0ae93c" class="numbered-list" start="4"><li><strong>Programs may experience slowdown</strong> as coordination
+amongst threads comes at a price. Acquiring and releasing locks adds to
+program execution time. Threads fighting over acquiring locks cause lock contention.</li></ol><p id="b1d9a948-b253-44f1-b715-3767ca841c2c" class="">
+</p>

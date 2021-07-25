@@ -1,0 +1,111 @@
+<div class="text-center">
+    <img src="assets_env_image/18.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>Now, we're going to change the look of this page in this module so that it does look better.</p>
+<p>So we need dynamic HTML files.</p>
+<p>it will about working with so-called templates which are such dynamic HTML files.</p>
+<p>We're going to take a closer look at the Django template language and the features it offers.</p>
+<p>Because that will help us output dynamic content in HTML files.</p>
+<p>And last but no least, we're going to make our site a bit prettier by adding static files like CSS.</p>
+<p>But we could also add Javascript or images</p>
+<h3><strong>Adding & Registering Templates</strong></h3>
+<strong>1) monthly_challenges/challenges/templates/challenges/challenge.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Monthly Challenge&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;This Month's Challenge&lt;/h1&gt;
+    &lt;h2&gt;Go for a walk for at least 20 minutes every day!&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+...
+from django.template.loader import render_to_string
+
+...
+...
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        # response_data = f"&lt;h1&gt;{challenge_text}&lt;/h1&gt;"
+        <strong>response_data = render_to_string('challenges/challenge.html')</strong>
+        return HttpResponse(response_data)    
+    except:
+        return HttpResponseNotFound("&lt;h1&gt;This month is not supported!&lt;/h1&gt;")
+        </code>
+    </pre>
+</div>
+<strong>3) monthly_challenges/monthly_challenges/settings.py</strong>
+
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+...
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            <strong>BASE_DIR / 'challenges' / 'templates'</strong>
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+...
+        </code>
+    </pre>
+</div>
+<p>But that is actually not the best way of making Django aware of our template here. There is a better way, because at the moment, we would have to basically change dirs whenever we add a new app to our project.</p>
+<p>And whilst we might not be doing that too often, this is such a common case that this kind of support for looking for templates in an app folder is actually built into Django.</p>
+<p>The <strong>app_dirs</strong> setting, tells Django that it wants to look for templates in the app folders. So it will automatically look for templates folder in app folders.</p>
+<p>Django will look into our app folder, and it will look for a Templates folder.</p>
+<strong>4) monthly_challenges/monthly_challenges/settings.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+INSTALLED_APPS = [
+    <strong>'challenges',</strong>
+    ...
+]
+
+...
+...
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            <strong># BASE_DIR / 'challenges' / 'templates'</strong>
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+        </code>
+    </pre>
+</div>
+<p>Now if you would have some other template folder outiside of your app, so some global templates, which are used by multiple apps, for example, then you could add this folder to <strong>dirs</strong> as we did it earlier.</p>

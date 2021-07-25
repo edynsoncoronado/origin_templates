@@ -1,0 +1,71 @@
+<strong>1) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.urls import reverse
+
+
+monthly_challenges = {
+    "january": "Eat no meat for the entire month!",
+    "february": "Walk for at least 20 minutes every day!",
+    "march": "Learn Django for at least 20 minutes every day!",
+    "april": "My birthday",
+    "may": "Mother's Day",
+    "june": "Father's Day",
+    "july": "National Holidays",
+    "august": "One more month",
+    "september": "Spring is here",
+    "october": "Costume party",
+    "november": "Christmas is comming",
+    "december": "The year is over"
+}
+
+<strong>def index(request):
+    list_items = ""
+    months = list(monthly_challenges.keys())
+
+    for month in months:
+        capitalized_month = month.capitalize()
+        month_path = reverse('month-challenge', args=[month])
+        list_items += f"&lt;li&gt;&lt;a href=\"{month_path}\">{capitalized_month}&lt;/a&gt;&lt;/li&gt;"
+
+    response_data = f"&lt;ul&gt;{list_items}&lt;/ul&gt;"
+    return HttpResponse(response_data)</strong>
+
+def monthly_challenge_by_number(request, month):
+    months = list(monthly_challenges.keys())
+    if month > len(months):
+        return HttpResponseNotFound("Invalid month")
+
+    redirect_month = months[month - 1]
+    redirect_path = reverse('month-challenge', args=[redirect_month])
+    return HttpResponseRedirect(redirect_path)
+
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        response_data = f"&lt;h1&gt;{challenge_text}&lt;/h1&gt;"
+        return HttpResponse(response_data)    
+    except:
+        return HttpResponseNotFound("&lt;h1&gt;This month is not supported!&lt;/h1&gt;")
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    <strong>("", views.index),</strong>
+    path("<int:month>", views.monthly_challenge_by_number),
+    path("<str:month>", views.monthly_challenge, name="month-challenge"),
+]
+        </code>
+    </pre>
+</div>

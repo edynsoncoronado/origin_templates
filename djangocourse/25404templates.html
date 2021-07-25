@@ -1,0 +1,68 @@
+<strong>1) monthly_challenges/templates/404.html </strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+{% extends "base.html" %}
+
+{% block page_title %}
+    Something went wrong - we could not find that page!
+{% endblock %}
+
+{% block content %}
+    &lt;h1&gt;We could not find that page!&lt;/h1&gt;
+    &lt;p&gt;Sorry, but we could not find a matching page!&lt;/p&gt;
+{% endblock %}            
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/views.py </strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+<strong>from django.template.loader import render_to_string</strong>
+...
+...
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        return render(request, 'challenges/challenge.html', {
+            'text': challenge_text,
+            'month_name': month
+        })
+    except:
+        <strong>response_data = render_to_string("404.html")
+        return HttpResponseNotFound(response_data)</strong>
+        </code>
+    </pre>
+</div>
+<p>We can't use the render shortcut function here though because that always renders a success response.</p>
+<div class="text-center">
+<img src="assets_env_image/20.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>Now HTTP 404 is now not a response which you create like this and what you return.</p>
+<p>Instead, what that is, is it's a clause that you raise as an error.</p>
+<p>So here you would raise HTTP 404 like this.</p>
+<strong>1) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.http import <strong>Http404</strong>, HttpResponseNotFound, HttpResponseRedirect
+...
+...
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        return render(request, 'challenges/challenge.html', {
+            'text': challenge_text,
+            'month_name': month
+        })
+    except:
+        <strong>raise Http404()</strong>
+        </code>
+    </pre>
+</div>
+<p>if you save this and reload, you get this page here during development, because there the debug = true setting is set.</p>
+<p>But as you see down there, if we would set this to false in our settings, we would see our standard 404 page.</p>
+<div class="text-center">
+<img src="assets_env_image/21.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>

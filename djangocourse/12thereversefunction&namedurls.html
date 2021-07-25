@@ -1,0 +1,54 @@
+<p>Now we always strive for such dynamic solutions and dynamic approaches simply because that allows us to write less code and more maintainable code, which is easier to change.</p>
+<p>And that's always something we wanna aim for.</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+    return HttpResponseRedirect('/challenges/' + redirect_month)
+        </code>
+    </pre>
+</div>
+<p>This URL to which we wanna redirect, would be constructed in a more dynamic way.</p>
+<p>And thankfully, that is something which is possible with Python and Django.</p>
+<strong>1) monthly_challenges/challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+from django.urls import path
+
+from . import views
+
+urlpatterns = [
+    path("&lt;int:month&gt;", views.monthly_challenge_by_number),
+    path("&lt;str:month&gt;", views.monthly_challenge, <strong>name="month-challenge"</strong>),
+]
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def monthly_challenge_by_number(request, month):
+    months = list(monthly_challenges.keys())
+    if month > len(months):
+        return HttpResponseNotFound("Invalid month")
+
+    redirect_month = months[month - 1]
+    <strong>redirect_path = reverse('month-challenge', args=[redirect_month])</strong>
+    return HttpResponseRedirect(<strong>redirect_path</strong>)
+        </code>
+    </pre>
+</div>
+<p>And the great advantage here now, is that we can now change that URL, and also the parts leading up to that URL, like here, in the main project <strong>urls.py</strong> file, however we want.</p>
+<strong>3) monthly_challenges/monthly_challenges/urls.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+-- path('challenges/', include("challenges.urls"))
+<strong>++ path('challenge/', include("challenges.urls"))</strong>
+        </code>
+    </pre>
+</div>
+<p>We're not constructing our redirect path by hard coding the full path, but by instead pointing at the name of the URL and Django then automatically figures out what the correct URL. And that is a super important feature.</p>
+<p>Whenever you are creating paths to which you wanna redirect or to what you wanna link, you really wanna consider using that reverse function instead of manually hard coding the path.</p>
+<p>And now we got truly dynamic views here, which can deal with any months, and which really work in a way that requires minimum input from us as a developer, and where we can make changes without having to change dozens of places in our code base.</p>

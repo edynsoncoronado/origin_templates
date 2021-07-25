@@ -1,0 +1,46 @@
+<p>Tags are simply, another syntax feature that's built into the <strong>DTL</strong>.</p>
+<strong>1) monthly_challenges/challenges/views.py </strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def index(request):
+    list_items = ""
+    months = list(monthly_challenges.keys())
+    return render(request, 'challenges/index.html', {
+        'months': months
+    })
+    <strong>"""
+    for month in months:
+        capitalized_month = month.capitalize()
+        month_path = reverse('month-challenge', args=[month])
+        list_items += f"&lt;li&gt;&lt;a href=\"{month_path}\"&gt;{capitalized_month}&lt;/a&gt;&lt;/li&gt;"
+
+    response_data = f"&lt;ul&gt;{list_items}&lt;/ul&gt;"
+    return HttpResponse(response_data)
+    """</strong>
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/templates/challenges/index.html</strong>
+<p>We will find that URL tag, is basically the equivalent to the reverse function just inside of your templates.</p>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;All Challenges&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;ul&gt;
+        {% for month in months %}
+            &lt;li>&lt;a href="{% url "month-challenge" month %}"&gt;{{ month|title }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+</div>
+<hr>
+<a href="https://docs.djangoproject.com/en/3.2/ref/templates/builtins/#url" class="link-info" target="_blank">Built-in template tags and filters</a>

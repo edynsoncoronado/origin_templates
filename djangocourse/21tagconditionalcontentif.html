@@ -1,0 +1,32 @@
+<strong>1) monthly_challenges/challenges/views.py </strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+monthly_challenges = {
+    ...
+    "december": None
+}
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/templates/challenges/challenges.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title>{{ month_name }} Challenge&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;{{ month_name|title }} Challenge&lt;/h1&gt;
+    <strong>{% if text is not None %}
+        &lt;h2>{{ text }}&lt;/h2&gt;
+    {% else %}
+        &lt;p&gt;There is no challenge for this month yet!&lt;/p&gt;
+    {% endif %}</strong>
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+</div>

@@ -1,0 +1,24 @@
+<p>So when building a website as a web developer we have to plan which URLs we wanna support.</p>
+<p>So the idea is that we have various URLs, which leads to different results, different responses being sent back to the visitors of our website.</p>
+<p>It's about mapping certain actions, certain things that should happen, to certain URLs.</p>
+<p>That's the idea behind URLs.</p>
+<div class="text-center">
+    <img src="assets_env_image/10.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<h3>Now what are views?</h3>
+<p>Well, the URLs are responsible for defining the URLs we wanna support and the actions that should be triggered.
+</p>
+<p><strong>Views</strong> then basically are those actions.</p>
+<p><strong>Views</strong> are all about holding the concrete logic.</p>
+<p>The concrete Python code that should be executed for the different URLs.</p>
+<p>A <strong>View</strong> in Django in its simplest form is just a function.</p>
+<p>A function full of Python code, which is executed automatically by Django when a request for a certain URL reaches the Django server.</p>
+<p>It could also be a class, you have both options when working with the Django.</p>
+<p>The code in that views is simply code that handles the incoming request, does something like reach out to a database or whatever and then returns a fitting response.</p>
+<p>And in a view you typically perform tasks like loading and preparing data, running any other kind of business logic like encrypting passowrds or something like that.
+</p>
+<p>And then you prepare and return the response data.</p>
+<p>For example a HTML document that should be sent back to the client.</p>
+<div class="text-center">
+    <img src="assets_env_image/11.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>

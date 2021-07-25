@@ -1,0 +1,40 @@
+<div class="text-center">
+    <img src="assets_env_image/19.png" class="figure-img img-fluid rounded" alt="..." style="width: 80%;">
+</div>
+<p>Django has its own templating language, the Django Template Language or <strong>DTL</strong>.</p>
+<p>You wanna create HTML files, which you then can enhance to actually create dynamic pages which are being sent back to the client on the fly on the server.</p>
+<p>So the idea is that we have standard HTML syntax, as we saw it thus far, combined with this special Django template language to dynamically inject values, or dynamically create HTML elements inside of this HTML file.</p>
+<p>And we therefore have a dynamic HTML page as a result, which is returned with the response.</p>
+<strong>1) monthly_challenges/challenges/views.py</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+def monthly_challenge(request, month):
+    try:
+        challenge_text = monthly_challenges[month]
+        <strong>return render(request, 'challenges/challenge.html', {
+            'text': challenge_text,
+	    'month_name': month.capitalize()
+        })</strong>
+    except:
+        return HttpResponseNotFound("&lt;h1&gt;This month is not supported!&lt;/h1&gt;")
+        </code>
+    </pre>
+</div>
+<strong>2) monthly_challenges/challenges/templates/challenges/challenges.html</strong>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    <strong>&lt;title&gt;{{ month_name }} Challenge&lt;/title&gt;</strong>
+&lt;/head&gt;
+&lt;body&gt;
+    <strong>&lt;h1&gt;{{ month_name }} Challenge&lt;/h1&gt;</strong>
+    &lt;h2&gt;{{ text }}&lt;/h2&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+        </code>
+    </pre>
+</div>

@@ -1,0 +1,18 @@
+<p id="97550eae-66a4-4a5e-a87b-13d5602fd0bb" class="">it processes state changes in your resource.</p><p id="ee1cd557-4c11-4e25-9193-885fa5fb1bf9" class="">
+</p><p id="594ea3b8-45ff-4340-a3e6-26ac87b5e647" class="">So let&#x27;s say we have an event source in this case, Amazon EC2 and something happens, the EC2 instance is terminated.</p><p id="1ecfffc8-8a92-481f-bc5a-5965fa45ad09" class="">So this is the event.</p><p id="672808e9-929d-438a-8a4f-369c742940a8" class="">That goes through to the Amazon EventBridge event bus.</p><p id="1fdb8b91-33eb-481b-be15-442979544d09" class="">And then we can have a rule and the rule might say that you&#x27;re going to forward an SNS notification</p><p id="6b749dbf-f64f-44bb-82b8-0749499292d3" class="">to somebody to let them know what&#x27;s just happened.</p><p id="c37650b2-3b9d-489c-b03e-8a335b47eb78" class="">So that&#x27;s very simply how it works and it can process lots of different state changes in our resources.</p><p id="6462b400-54ad-4df8-bcff-edf5428f524f" class="">So in this case, the email goes out.</p><p id="1295b095-7ca1-44d0-b4b7-2e37f594b1f3" class="">
+</p>
+<div class="text-center">
+	<img src="assets_env_image/18.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<p id="6ac614e4-6606-4f98-8c73-cb7a0069d84a" class="">
+</p><p id="ecf59c3c-651f-4f39-857e-6e5af4a33407" class="">So here&#x27;s an example of creating a event rule in Amazon EventBridge.</p>
+<div class="text-center">
+	<img src="assets_env_image/19.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<p id="4a8d4828-bbdb-402f-84d2-7514084db31c" class="">So here we have the service provider as AWS.</p><p id="7ab7c2fe-cfd7-4cf1-a92e-a78f513b0e5f" class="">The service name is EC2 and we&#x27;re looking for an EC2 instance state change notification.</p><p id="b1b7dafa-63ba-444a-9a1a-252195b6bfb8" class="">And we&#x27;re describing the specific state here that we want to be notified.</p><p id="41ff6c0e-130d-436f-912e-26462a5d4339" class="">And in this case, that&#x27;s terminated events.</p><p id="39c34442-c0ed-416f-b9bd-7d7e71e7ea5d" class="">And in fact, you can specify a individual instance ID as well.</p><p id="5a161ed3-b61b-45e1-b7bc-9d96687c872f" class="">
+</p><p id="4898eec0-a202-4040-ab89-c1e3374f41c2" class="">And then we&#x27;d get a result, something like this, and that would be forwarded through.</p>
+<div class="text-center">
+	<img src="assets_env_image/20.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<p id="a16a6680-dc67-4d9e-b3c7-897377182637" class="">And we can quite easily configure and <strong>SNS notification</strong> to send somebody an email to let them know that this instance has been terminated.</p><p id="991d9a22-88c4-48e1-b024-93fc6e316677" class="">
+</p>
