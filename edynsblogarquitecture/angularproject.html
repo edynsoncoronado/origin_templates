@@ -1,0 +1,342 @@
+<h2 id="96286814-47a0-46a2-a036-d9dc09a06c22" class=""><strong>1) ng help</strong></h2>
+
+<div class="code-wrapper">
+<pre id="5c4412c4-936b-4164-9811-c8630fbd449e" class="code"><code>$ ng help
+Available Commands:
+  add Adds support for an external library to your project.
+  analytics Configures the gathering of Angular CLI usage metrics. See https://angular.io/cli/usage-analytics-gathering.
+  build (b) Compiles an Angular app into an output directory named dist/ at the given output path. Must be executed from within a workspace directory.
+  deploy Invokes the deploy builder for a specified project or for the default project in the workspace.
+  config Retrieves or sets Angular configuration values in the angular.json file for the workspace.
+  doc (d) Opens the official Angular documentation (angular.io) in a browser, and searches for a given keyword.
+  e2e (e) Builds and serves an Angular app, then runs end-to-end tests using Protractor.
+  extract-i18n (i18n-extract, xi18n) Extracts i18n messages from source code.
+  generate (g) Generates and/or modifies files based on a schematic.
+  help Lists available commands and their short descriptions.
+  lint (l) Runs linting tools on Angular app code in a given project folder.
+  new (n) Creates a new workspace and an initial Angular application.
+  run Runs an Architect target with an optional custom builder configuration defined in your project.
+  serve (s) Builds and serves your app, rebuilding on file changes.
+  test (t) Runs unit tests in a project.
+  update Updates your application and its dependencies. See https://update.angular.io/
+  version (v) Outputs Angular CLI version.</code></pre>
+</div>
+<br>
+<h2 id="d5f09c77-ac18-4825-b512-d05ed2795ed4" class=""><strong>2) new project</strong></h2>
+
+<div class="code-wrapper">
+<pre id="e4258435-b90a-47fb-9ea6-032fc4635106" class="code"><code>$ ng new EdyNBlog
+? Do you want to enforce stricter type checking and stricter bundle budgets in the workspace?
+  This setting helps improve maintainability and catch bugs ahead of time.
+  For more information, see https://angular.io/strict No
+? Would you like to add Angular routing? No
+? Which stylesheet format would you like to use? CSS</code></pre>
+</div>
+<br>
+<h2 id="ede95787-4dbe-43e2-869d-94ee66702d2d" class=""><strong>3) running</strong></h2>
+
+<div class="code-wrapper">
+<pre id="0f2f92f0-6b57-4b4d-bdb7-bef44a39b5be" class="code"><code>$ ng serve</code></pre>
+</div>
+<br>
+<h2 id="20e4e9a2-97ef-40f7-b45f-f02a7a0d0759" class=""><strong>4) mockups templates</strong></h2><h3 id="1092c115-d4d7-4960-bd8f-a37c49ee81fb" class=""><strong>4.1) menu</strong></h3>
+
+<div class="text-center">
+<img src="assets_env_image/6.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="b50f091d-df5d-4f26-9237-cdc7f05094c6" class=""><strong>4.2) blog</strong></h3>
+
+<div class="text-center">
+<img src="assets_env_image/7.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="8d98cd68-c860-4f49-b6db-3a4d3fdfa261" class=""><strong>4.3) courses</strong></h3>
+
+<div class="text-center">
+<img src="assets_env_image/8.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="fea6df14-1b4d-439b-bd85-c50417ad5520" class=""><strong>4.4) post</strong></h3>
+
+<div class="text-center">
+<img src="assets_env_image/9.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="32857db0-54ae-4dbd-98f6-c22a22985217" class=""><strong>4.5) Esquema de rutas</strong></h3>
+
+<div class="text-center">
+<img src="assets_env_image/10.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<br>
+<h2 id="c9df6baa-36bd-4403-b26b-7350354fec4d" class=""><strong>5) src/index.html</strong></h2>
+
+<div class="code-wrapper">
+<pre id="af80bf0f-7414-44b6-a714-a19126d89b23" class="code"><code>&lt;body class=&quot;bg-dark&quot; style=&quot;font-size: 20px;&quot;&gt;
+  &lt;app-root&gt;&lt;/app-root&gt;
+&lt;/body&gt;</code></pre>
+</div>
+<br>
+<h2 id="89d2e7bc-f54a-4eb1-ba64-851dc0720ac4" class=""><strong>6) Environement</strong></h2><h3 id="fd93ab51-cc2c-4ae4-852f-8b01bbbda6af" class=""><strong>6.1) environement test</strong></h3>
+
+<div class="code-wrapper">
+<pre id="29182c78-1281-48dc-9d57-b9503804912d" class="code"><code>// $ touch src/environments/environment.dev.ts
+export const environment = {
+  production: false,
+  urlEdyn: &#x27;http://localhost:8000&#x27;
+};</code></pre>
+</div>
+<h3 id="e4455c15-8329-42f0-8274-400d569c3af6" class=""><strong>6.2) src/environments/environment.prod.ts</strong></h3>
+
+<div class="code-wrapper">
+<pre id="c602ad21-a8ea-42e2-92a1-80f61b02a6bf" class="code"><code>export const environment = {
+  production: true,
+  urlEdyn: &#x27;https://url-prod&#x27;
+};</code></pre>
+</div>
+<h3 id="97bc3730-9ebc-476c-9f6a-f607fb252430" class=""><strong>6.3) src/environments/environments.ts</strong></h3>
+
+<div class="code-wrapper">
+<pre id="cc980377-d14a-4fa8-8fd3-adb708cb43c2" class="code"><code>export const environment = {
+  production: false,
+  urlEdyn: &#x27;http://localhost:8000&#x27;
+};</code></pre>
+</div>
+<br>
+<h2 id="d2818a76-c5cb-48a8-a9cd-4eb13bd4e855" class=""><strong>7) programming navbar</strong></h2><h3 id="fdad00bc-7631-4791-98f7-6c036473e0f9" class=""><strong>7.1) create component navbar</strong></h3>
+
+<div class="code-wrapper">
+<pre id="097bc45a-19f0-48d1-bd9e-40326acb9792" class="code"><code>$ ng g c navbar --skip-tests=true</code></pre>
+</div>
+<h3 id="5f5cd574-4079-4bf3-8b6c-7b71b65190da" class=""><strong>7.2) create model navbar</strong></h3>
+
+<div class="code-wrapper">
+<pre id="655430dd-192a-448f-91f7-b08e9a3a8d8e" class="code"><code>// $ touch src/app/navbar/navbar.model.ts
+export interface Category{
+    id: string,
+    name: string
+}</code></pre>
+</div>
+<h3 id="d37f5a4a-6fe1-4c45-90a3-135d464e19db" class=""><strong>7.3) src/app/app.module.ts</strong></h3>
+
+<div class="code-wrapper">
+<pre id="4799a78d-b317-4c09-a1dd-44b7320b5780" class="code"><code>++ import { HttpClientModule } from &#x27;@angular/common/http&#x27;;
+...
+...
+  imports: [
+    BrowserModule,
++++    HttpClientModule
+  ],</code></pre>
+</div>  
+<h3 id="9b3947bf-c739-4d66-9d43-dcffbc611f92" class=""><strong>7.4) src/app/navbar/navbar.component.ts</strong></h3>
+
+<div class="code-wrapper">
+<pre id="0f55b8c1-c70e-4fdd-9981-d49ee63898b5" class="code"><code>import { Component, OnInit } from &#x27;@angular/core&#x27;;
+import { HttpClient } from &#x27;@angular/common/http&#x27;;
+import { Category } from &#x27;./navbar.model&#x27;;
+import { environment } from &#x27;../../environments/environment&#x27;;
+
+@Component({
+  selector: &#x27;app-navbar&#x27;,
+  templateUrl: &#x27;./navbar.component.html&#x27;,
+  styleUrls: [&#x27;./navbar.component.css&#x27;]
+})
+export class NavbarComponent implements OnInit {
+  loadedCategorys: Category[] = [];
+
+  constructor(private http: HttpClient) { }
+
+  ngOnInit(){
+    this.onFetchCategorys();
+  }
+
+  onFetchCategorys(){
+    this.http.
+    get&lt;Category&gt;(
+      environment.urlEdyn + &#x27;/category/&#x27;,
+    ).subscribe(resp=&gt;{
+      for(let i in resp){
+        this.loadedCategorys.push({...resp[i]})
+      }
+    });
+  }
+
+}</code></pre>
+</div>
+<h3 id="ec840f2a-b948-4802-9842-b03eddcb7ed2" class=""><strong>7.5) src/app/navbar/navbar.component.html</strong></h3>
+
+<div class="code-wrapper">
+<pre id="23901b38-19a3-4b42-b1a3-1bb8a61a97f8" class="code"><code>&lt;header&gt;
+  &lt;nav class=&quot;navbar navbar-expand-lg navbar-dark fixed-top bg-dark&quot; aria-label=&quot;Eighth navbar&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;a class=&quot;navbar-brand&quot; routerLink=&quot;/&quot;&gt;
+        &lt;img src=&quot;../assets/images/logo2.png&quot; alt=&quot;&quot; width=&quot;40&quot; height=&quot;40&quot;&gt;
+      &lt;/a&gt;
+      &lt;button class=&quot;navbar-toggler&quot; type=&quot;button&quot; data-bs-toggle=&quot;collapse&quot; data-bs-target=&quot;#navbarSupportedContent&quot; aria-controls=&quot;navbarSupportedContent&quot; aria-expanded=&quot;false&quot; aria-label=&quot;Toggle navigation&quot;&gt;
+        &lt;span class=&quot;navbar-toggler-icon&quot;&gt;&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;div class=&quot;collapse navbar-collapse justify-content-md-end&quot; id=&quot;navbarSupportedContent&quot;&gt;
+        &lt;ul class=&quot;navbar-nav&quot;&gt;
+          &lt;li class=&quot;nav-item&quot; *ngFor=&quot;let category of loadedCategorys&quot;&gt;
+            &lt;a class=&quot;nav-link active&quot; reouterLink=&quot;/category/{{ category.id }}&quot;&gt;
+              {{ category.name }}
+            &lt;/a&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;</code></pre>
+</div>
+<h3 id="203b6da7-8d39-4f8f-93e5-ec105f818636" class=""><strong>7.6) src/app/app.component.html</strong></h3>
+
+<div class="code-wrapper">
+<pre id="19bdd94f-b457-4a4c-b74e-a33ea363d40d" class="code"><code>&lt;app-navbar&gt;&lt;/app-navbar&gt;</code></pre>
+</div>
+<br>
+<h2 id="8ed3deb8-ebd3-4bc7-80d4-87485c1f35c6" class=""><strong>8) install bootstrap</strong></h2>
+
+<div class="code-wrapper">
+<pre id="4571bbba-adb0-4a3a-bd13-0dd47208d933" class="code"><code>$ npm install --save bootstrap@next</code></pre>
+</div>
+<h3 id="d7260d22-a195-410b-bd8e-3dcb3f4f0f1b" class=""><strong>8.1) angular.json</strong></h3>
+
+<div class="code-wrapper">
+<pre id="9034f99c-f383-4e87-9198-35163cc01c7b" class="code"><code>&quot;build&quot;:{
+  ...
+  ...
+  &quot;styles&quot;: [
+    &quot;node_modules/bootstrap/dist/css/bootstrap.min.css&quot;,
+    &quot;src/styles.css&quot;
+  ],</code></pre>
+</div> 
+<br>
+<p id="e8ff59fc-69c7-4ac5-a6bd-6a6679ab40fd" class="">
+</p><h2 id="7b498aa8-557e-4395-922a-40054e10b6d5" class=""><strong>9) django-cors-headers</strong></h2><h3 id="b1d4e485-7d5c-4468-a90e-b1b567d9b79e" class=""><strong>9.1) pip install</strong></h3>
+
+<div class="code-wrapper">
+<pre id="180511db-4082-42e1-893b-0db51ab93471" class="code"><code>$ pip install django-cors-headers</code></pre>
+</div>
+<h3 id="29fa4e1f-62a2-4f1a-a767-a13157560ad0" class=""><strong>9.2) settings.py</strong></h3>
+
+<div class="code-wrapper">
+<pre id="ebb581a8-01a2-4bf1-b52a-9393b3d42dc3" class="code"><code>INSTALLED_APPS = [
+      ...
+++    &#x27;corsheaders&#x27;,
+]
+
+MIDDLEWARE = [
+++    &#x27;corsheaders.middleware.CorsMiddleware&#x27;,
+++    &#x27;django.middleware.common.BrokenLinkEmailsMiddleware&#x27;,
+    ...
+]
+
+++ CORS_ORIGIN_ALLOW_ALL = False
+
+++ CORS_ALLOWED_ORIGINS = [
+++    &quot;http://localhost:4200&quot;,
+++ ]</code></pre>
+</div>
+<br>
+<p id="6eb8886a-2033-4f5c-badf-7fc3585725b7" class="">
+</p><h2 id="341809e1-9085-472a-951e-b69636baea07" class=""><strong>10) Routers</strong></h2><h3 id="d42d0056-37f8-4aec-8da5-ada1b77d62da" class=""><strong>10.1) src/app/app.modules.ts</strong></h3>
+
+<div class="code-wrapper">
+<pre id="d01d6ef2-bfba-4ec2-ab49-615fa52c0027" class="code"><code>import { RouterModule, Routes } from &#x27;@angular/router&#x27;;
+
+const appRoutes: Routes = [
+  {path: &#x27;&#x27;, component: BlogComponent},
+  {path: &#x27;category/id&#x27;, component: BlogComponent},
+  {path: &#x27;blog&#x27;, component: PostListComponent},
+  {path: &#x27;blog/:id&#x27;, component: PostDetailComponent}
+]
+...
+...
+  imports: [
+    ...
+    RouterModule.forRoot(appRoutes, {useHash: true})
+  ],</code></pre>
+</div>
+<h3 id="e16042ce-5717-4af4-a599-f7200dbe07da" class=""><strong>10.2) src/app/app.component.html</strong></h3>
+
+<div class="code-wrapper">
+<pre id="0004822b-fcb4-45f4-9ace-30d693bde7cd" class="code"><code>&lt;app-navbar&gt;&lt;/app-navbar&gt;
++++&lt;main&gt;
++++    &lt;router-outlet&gt;&lt;/router-outlet&gt;
++++&lt;/main&gt;</code></pre>
+</div>
+<br>
+<p id="48c2bf91-02a8-4d69-8cf0-096786c97352" class="">
+</p><h2 id="3e13fcd0-efae-48f6-a8a6-24215cf09a9d" class=""><strong>11) Programming blog</strong></h2>
+
+<div class="code-wrapper">
+<pre id="c910354c-567a-4f38-a527-b5a3119c2b88" class="code"><code>$ ng g c blog --skip-tests=true
+$ ng g c blog/post-detail --skip-tests=true
+$ ng g c blog/post-list --skip-tests=true</code></pre>
+</div>
+<h3 id="39fa09dc-b583-4f41-97f8-02c6ac917d62" class=""><strong>11.1) Blog Model</strong></h3>
+
+<div class="code-wrapper">
+<pre id="d98baeb7-373e-421c-b4fa-62ed24cab6b8" class="code"><code>// $ touch src/app/blog/blog.model.ts
+
+export interface Tag{
+    name: string
+}
+
+export interface Cover{
+    id: string,
+    name: string,
+    description?: string
+}
+
+export interface Post{
+    id: string,
+    name: string,
+    content: string,
+    cover?: Cover,
+    tags: Tag[],
+    created: string
+}</code></pre>
+</div>
+<h3 id="3ad55db1-24cf-4036-8dab-e743a85db49c" class=""><strong>11.2) src/app/blog/blog.component.html</strong></h3>
+
+<div class="code-wrapper">
+<pre id="51505342-c121-4946-b705-0332171e5b2f" class="code"><code>&lt;main&gt;
+    &lt;app-post-list&gt;&lt;/app-post-list&gt;
+&lt;/main&gt;</code></pre>
+</div>
+<br>
+<p id="6d377e6e-c8e3-4cc7-b71e-7c313ff8df9b" class="">
+</p><h2 id="f17c1056-95df-4b16-affb-7c908779b1af" class=""><strong>12) PROGRAMMING PIPE SAFE</strong></h2>
+
+<div class="code-wrapper">
+<pre id="fb3118a9-6f2c-4547-8cc4-2f9e1d0775f7" class="code"><code>$ ng generate pipe/safe</code></pre>
+</div>
+<br>
+<h2 id="64d064c1-93aa-407d-b56c-a8b9d4d1e9b3" class=""><strong>13) safe.pip.ts</strong></h2>
+
+<div class="code-wrapper">
+<pre id="9db77f91-2b67-4daa-986c-4c530df88de8" class="code"><code>import { Pipe, PipeTransform } from &#x27;@angular/core&#x27;;
+import { DomSanitizer, SafeHtml, SafeStyle, SafeScript, SafeUrl, SafeResourceUrl } from &#x27;@angular/platform-browser&#x27;;
+
+@Pipe({
+  name: &#x27;safe&#x27;
+})
+export class SafePipe implements PipeTransform {
+  constructor(protected sanitizer: DomSanitizer){}
+
+  public transform(value: any, type: string): SafeHtml | SafeStyle | SafeScript | SafeUrl | SafeResourceUrl {
+    switch(type){
+      case &#x27;html&#x27;: return this.sanitizer.bypassSecurityTrustHtml(value);
+      case &#x27;style&#x27;: return this.sanitizer.bypassSecurityTrustStyle(value);
+      case &#x27;script&#x27;: return this.sanitizer.bypassSecurityTrustScript(value);
+      case &#x27;url&#x27;: return this.sanitizer.bypassSecurityTrustUrl(value);
+      case &#x27;resourceUrl&#x27;: return this.sanitizer.bypassSecurityTrustResourceUrl(value);
+      default: throw new Error(`Invalid safe type specified: ${type}`);
+    }
+  }
+}</code></pre>
+</div>
+
+<hr>
+<li><a href="https://github.com/adamchainz/django-cors-headers#configuration" class="link-info" target="_blank">CORS Django</a></li>

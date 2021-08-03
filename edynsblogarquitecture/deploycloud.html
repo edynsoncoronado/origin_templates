@@ -1,0 +1,253 @@
+<h2 id="f668dc3f-b2c3-44da-ae6a-f40d8016ebf5" class=""><strong>1) Create database</strong></h2>
+
+<div class="code-wrapper">
+<pre id="936e29f0-c949-4356-a872-984d86738f05" class="code"><code>$ psql
+create database edynblog</code></pre>
+</div>
+<br>
+<h2 id="ae87f0f5-1988-44c8-964f-7f34ee808012" class=""><strong>2) Install library</strong></h2>
+
+<div class="code-wrapper">
+<pre id="9156b881-94e7-4f19-88ac-0741ddf80509" class="code"><code>$ pip3 install psycopg2-binary
+$ pip3 install dj-database-url
+$ pip3 install python-decouple</code></pre>
+</div>
+<br>
+<h2 id="e9a81934-73ec-4b50-a903-605b93750ddf" class=""><strong>3) .env</strong></h2>
+
+<div class="code-wrapper">
+<pre id="6c8129aa-d234-4c23-9af9-ca947d523943" class="code"><code># DATABASE_URL=postgres://$USER:$PASS@$HOST/$BD
+DATABASE_URL=postgres://edy:edy@localhost/edynblog</code></pre>
+</div>
+<br>
+<h2 id="e193b661-4d61-4de9-bcb3-1ec056bd1560" class=""><strong>4) Settings</strong></h2>
+
+<div class="code-wrapper">
+<pre id="5fe40d6c-4530-4e23-bbcf-ea39afea3c69" class="code"><code>from pathlib import Path
+from decouple import config
+import dj_database_url
+
+...
+...
+DATABASES = {
+    &#x27;default&#x27;: dj_database_url.config(
+        default=config(&#x27;DATABASE_URL&#x27;)
+    )
+}</code></pre>
+</div>
+<br>
+<h2 id="a6f06e80-2cd3-4a0a-8fea-001c42db40c1" class=""><strong>5) Migrate</strong></h2>
+
+<div class="code-wrapper">
+<pre id="eeef9174-f11e-4752-af4e-07b8b038b314" class="code"><code>$ python manage.py migrate</code></pre>
+</div>
+<br>
+<h2 id="fa53cef5-9058-40c0-ae26-340b8a9c283a" class=""><strong>6) SuperUser</strong></h2>
+
+<div class="code-wrapper">
+<pre id="d9be3e96-88c3-49d0-a146-935630d8bbd4" class="code"><code>$ python manage.py createsuperuser --username admin
+Email address: admin@edynsoncoronado.com
+Password: 
+Password (again): 
+Superuser created successfully.</code></pre>
+</div>
+<br>
+<h2 id="e077ae5d-6420-4376-945c-bad98bb7f3e7" class=""><strong>7) Heroku Login</strong></h2>
+
+<div class="code-wrapper">
+<pre id="969f0a03-9642-4453-acc2-7cce98388ea6" class="code"><code>$ heroku login -i</code></pre>
+</div>
+<br>
+<h2 id="af3bd0c2-6399-4047-b14c-45a4d7f1982c" class=""><strong>8) Create app Heroku</strong></h2>
+
+<div class="code-wrapper">
+<pre id="6f0ac1ea-0615-49ac-a864-fbff66dd0107" class="code"><code>$ heroku create edyn-blog-v2</code></pre>
+</div>
+
+<div class="text-center">
+<img src="assets_env_image/11.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<br>
+<h2 id="bb907467-89dd-4c89-9617-629713c62760" class=""><strong>9) Create addons postgres en heroku</strong></h2><p id="bf165086-fdfa-4baf-91f8-2cde3a2f2a0f" class=""><a href="https://devcenter.heroku.com/articles/heroku-cli-commands#heroku-addons-create-service-plan">https://devcenter.heroku.com/articles/heroku-cli-commands#heroku-addons-create-service-plan</a></p>
+
+<div class="code-wrapper">
+<pre id="86593abe-6ba6-4af4-9dc8-c4005ff22127" class="code"><code>$ heroku addons:create heroku-postgresql:hobby-dev -a edyn-blog-v2
+ ›   Warning: heroku update available from 7.52.0 to 7.54.1.
+Creating heroku-postgresql:hobby-dev on ⬢ edyn-blog-v2... free
+Database has been created and is available
+ ! This database is empty. If upgrading, you can transfer
+ ! data from another database with pg:copy
+Created postgresql-rugged-60504 as DATABASE_URL
+Use heroku addons:docs heroku-postgresql to view documentation</code></pre>
+</div>
+
+<div class="text-center">
+<img src="assets_env_image/12.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<br>
+<h2 id="e7cde91c-bbbf-44ec-8cad-6d4b2e75e2ba" class=""><strong>10) Prepare AppDjango para deploy</strong></h2><h3 id="6fd52d1e-37e8-4f9e-bd19-9d37d029d421" class=""><strong>10.1) Install library</strong></h3>
+
+<div class="code-wrapper">
+<pre id="cbbeeabc-a466-4a0a-93eb-739f8f59e0b6" class="code"><code>$ pip3 install gunicorn</code></pre>
+</div>
+<h3 id="637cb47d-c5a3-46b8-a9b2-da973f0093b0" class=""><strong>10.2) Get Requirements</strong></h3>
+
+<div class="code-wrapper">
+<pre id="ceac25ea-184e-4ad2-9ae4-040e85590b22" class="code"><code>$ pip3 freeze &gt; requirements.txt
+asgiref==3.3.1
+certifi==2020.12.5
+chardet==4.0.0
+dj-database-url==0.5.0
+Django==3.1.7
+django-cors-headers==3.7.0
+django-filter==2.4.0
+djangorestframework==3.12.2
+gunicorn==20.1.0
+httpie==2.4.0
+idna==2.10
+Markdown==3.3.4
+psycopg2-binary==2.8.6
+Pygments==2.8.1
+PySocks==1.7.1
+python-decouple==3.4
+pytz==2021.1
+requests==2.25.1
+requests-toolbelt==0.9.1
+sqlparse==0.4.1
+urllib3==1.26.3</code></pre>
+</div>
+<h3 id="74223d9c-801c-4b11-a74c-74bfb6fac360" class=""><strong>10.3) Settings</strong></h3>
+
+<div class="code-wrapper">
+<pre id="1c515c5b-ceb3-475c-bcbc-33c1e51e2ace" class="code"><code>import os
+...
+...
+SECRET_KEY = config(&#x27;SECRET_KEY&#x27;)
+DEBUG = config(&#x27;DJANGO_DEBUG&#x27;, default=True, cast=bool)
+ALLOWED_HOSTS = [&#x27;*&#x27;]
+...
+...
+STATIC_ROOT = os.path.join(BASE_DIR, &#x27;staticfiles&#x27;)
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, &#x27;static&#x27;),
+)</code></pre>
+</div>
+<h3 id="f86839e1-10a5-4b27-ac2b-0ce5f7819427" class=""><strong>10.4) Add Carpeta Static</strong></h3>
+
+<div class="code-wrapper">
+<pre id="5b7d708c-ff5e-4d3b-af13-e78da3634ff3" class="code"><code>$ pwd
+/home/edyn/Envs/DjangoEdyN/EdyNBlog
+$ mkdir static
+$ touch static/keep</code></pre>
+</div>
+<h3 id="56419570-46ae-45a9-a8e7-3d6107beb4d5" class=""><strong>10.5) Environment Local</strong></h3>
+
+<div class="code-wrapper">
+<pre id="b977a60f-5f87-4a5b-a708-e3954723f62f" class="code"><code>DJANGO_DEBUG=True
+SECRET_KEY=xxx
+DATABASE_URL=postgres://edy:edy@localhost/edynblog</code></pre>
+</div>
+<h3 id="06891636-1a54-4937-9bc2-1328fabf68cf" class=""><strong>10.6) Environment Remote</strong></h3>
+
+<div class="text-center">
+<img src="assets_env_image/13.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="11082664-950b-4b46-b7f1-710158a6dd68" class=""><strong>10.7) Procfile</strong></h3>
+
+<div class="code-wrapper">
+<pre id="d120e330-c094-4de4-ab9a-edba18d32c15" class="code"><code>$ touch Procfile
+release: python manage.py migrate
+web: gunicorn EdyNBlog.wsgi --log-file -</code></pre>
+</div>
+<div class="code-wrapper">
+<pre id="41a09491-0090-4de0-a166-0853d7d7e0ca" class="code"><code>│   └── views.py
+├── edyn_blog
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── manage.py
+├── Procfile
+├── README.md
+├── requirements.txt
+└── static
+    └── keep</code></pre>
+</div> 
+<h3 id="f42c63fc-9e3a-40e7-8aa9-a27ef315045b" class=""><strong>10.8) Enlazar repo local a app heroku</strong></h3>
+
+<div class="code-wrapper">
+<pre id="a1c23cec-9488-4165-9f10-437e12b1cbec" class="code"><code>$ cdvirtualenv
+$ cd EdyNBlog
+$ git init
+$ git add .gitignore
+$ git add .
+$ git commit -m &quot;[ADD] First commit&quot;
+$ heroku git:remote -a edyn-blog-v2</code></pre>
+</div>
+<h3 id="3d4bdf7b-57d5-44d8-a964-f794f3f86c18" class=""><strong>10.9) Deploy</strong></h3>
+
+<div class="code-wrapper">
+<pre id="30a21e9b-6963-4512-a242-7e1f1e3d66cd" class="code"><code>$ git push heroku master
+$ heroku run python manage.py migrate</code></pre>
+</div>
+<br>
+<h2 id="e69dc188-71bb-4114-9fb5-b4bebb736c8c" class=""><strong>11) SuperUser en Producción</strong></h2>
+
+<div class="code-wrapper">
+<pre id="45846a1c-bfe6-45fa-8c1a-9438c5d32c48" class="code"><code>$ heroku run python manage.py  createsuperuser --username admin</code></pre>
+</div>
+<br>
+<h2 id="e779f063-e506-4cf9-9c6b-4f5f62c36e31" class=""><strong>12) Open</strong></h2>
+
+<div class="text-center">
+<img src="assets_env_image/14.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<br>
+<h1 id="a5e0d739-2b68-41b4-8a79-6a4be7c9c42e" class=""><strong>Deploy WEB</strong></h1><h2 id="3b8e01d6-7729-4a5f-be92-7f01569785c5" class=""><strong>1) Configuración repo </strong><strong><a href="http://github.io/">github.io</a></strong></h2>
+
+<div class="text-center">
+<img src="assets_env_image/15.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<br>
+<h2 id="eea0fdbe-9da2-4a67-a242-5b760775bf94" class=""><strong>2) Build Project Angular</strong></h2>
+
+<div class="code-wrapper">
+<pre id="da870e3d-4205-456b-82cd-be171d1951b9" class="code"><code>ng build --configuration=production --base-href=https://edynsoncoronado.com</code></pre>
+</div>
+<br>
+<h2 id="f0a430c4-8949-4814-9075-ce986c561b99" class=""><strong>3) add CNAME</strong></h2>
+<br>
+<h2 id="1731e610-a4a3-4ab2-8076-3d24cf848a6c" class=""><strong>4) exclude folder</strong></h2>
+
+<div class="code-wrapper">
+<pre id="68bde93a-05b3-4953-83c2-23287d15b4fa" class="code"><code>&quot;projects&quot;: {
+    &quot;EdyNBlog&quot;: {
+      &quot;architect&quot;: {
+        &quot;build&quot;: {
+					&quot;configurations&quot;: {
+            &quot;production&quot;: {
+	            &quot;assets&quot;: [{
+	              &quot;glob&quot;: &quot;**/*&quot;,
+	              &quot;input&quot;: &quot;src/assets/&quot;,
+	              &quot;ignore&quot;: [&quot;**/origin/**&quot;],
+	              &quot;output&quot;: &quot;/assets/&quot;
+	            },{
+	              &quot;glob&quot;: &quot;favicon.ico&quot;,
+	              &quot;input&quot;: &quot;src/&quot;,
+	              &quot;output&quot;: &quot;/&quot;
+	            }],</code></pre>
+</div> 
+<br>
+<h2 id="ae85f65d-9b57-4ceb-b6f9-a28cf549ecdd" class=""><strong>5) push</strong></h2>
+
+<div class="code-wrapper">
+<pre id="bfd4720d-820c-4503-9a32-dbf29c28c2a8" class="code"><code>$ git add .
+$ git commit -m &quot;[FEAT] Modificado page&quot;
+$ git push origin gh-pages</code></pre>
+</div>

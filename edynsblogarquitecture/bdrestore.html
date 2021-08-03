@@ -1,0 +1,49 @@
+<h3 id="d358f01e-0a91-4998-9a5c-189d407f12c8" class="">1) Install AWSCLI</h3>
+
+<div class="code-wrapper">
+<pre id="7dcf3160-417f-4a12-a83f-423b9337414a" class="code"><code>pip3 install awscli</code></pre>
+</div>
+<br>
+<h3 id="252097dc-a56c-4631-8095-15247db1cb44" class="">2) Crear usuario</h3>
+
+<div class="text-center">
+<img src="assets_env_image/16.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<br>
+<h3 id="46d4c1f9-6033-445b-84ce-bc056981db74" class="">3) Establecer Permisos</h3>
+<br>
+<h3 id="8d3a5ec8-b8af-4dc4-b81e-2546266ae657" class="">4) Copiar ID clave de acceso y clave secreta</h3>
+<br>
+<h3 id="b3bb33bc-d647-494e-a9a3-7d0345abd3e0" class="">5) Configurar AWS CLI</h3>
+
+<div class="code-wrapper">
+<pre id="566ff583-eaeb-41d7-a3f1-352ffc617fe1" class="code"><code>$ aws configure
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: us-west-2
+Default output format [None]: json</code></pre>
+</div>
+<br>
+<h3 id="38acdee9-136b-4c6e-8c8e-088da9712324" class="">6) Crear dump</h3>
+
+<div class="code-wrapper">
+<pre id="3273ed33-744d-457d-863a-43b0307f4502" class="code"><code>pg_dump -Fc --no-acl --no-owner -h localhost -U edy -d edynblog &gt; edynblog.dump</code></pre>
+</div>
+<br>
+<h3 id="524f4fbb-b05e-4650-975b-80ae4b0afe39" class="">7) Crear carpeta en s3 con acceso público </h3>
+<br>
+<h3 id="2cc27e55-ca11-477a-8d08-a2752fec6102" class="">8) Upload file</h3>
+
+<div class="code-wrapper">
+<pre id="0c766cfb-f270-4901-95a4-6819e52829f3" class="code"><code>aws s3 cp edynblog.dump s3://backup-edynblog/edynblog.dump --acl public-read</code></pre>
+</div>
+<br>
+<h3 id="a5417fb9-f24e-4ead-ab8c-780acc1217c1" class="">9) Generate</h3>
+
+<div class="code-wrapper">
+<pre id="ba4a2fde-ffbe-4ed0-9de8-eab6e95ef16e" class="code"><code>heroku pg:backups:restore https://backup-edynblog.s3.amazonaws.com/edynblog.dump DATABASE_URL -a edyn-blog-v2</code></pre>
+</div>
+
+<hr>
+<li><a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html" class="link-info" target="_blank">Configuration basics AWS CLI</a></li>

@@ -1,25 +1,330 @@
-<h3>1) Install Django</h3>
-<div class="alert alert-danger" role="alert">
-	A simple primary alert—check it out!
-      </div>
+<h3 id="6d2f20e5-c943-4b21-84fd-b3025f31c4b3" class="">1) Install Django</h3>
 
-      <div class="code-wrapper">
-	      <pre>
-		      <code id="code">
-function fibonacci(num){
-var num1=0;
-var num2=1;
-var sum;
-var i = 0;
-for (i = 0; i < num; i++){
-      sum = num1 + num2;
-      num1 = num2;
-      num2 = sum;
-}
-return num2;
-}
+<div class="code-wrapper">
+<pre id="81d400e4-62d9-491b-8fe3-f683a01b7866" class="code"><code>$ mkvirtualenv DjangoEdyN
+$ cdvirtualenv
+$ pip install Django
+$ pip install djangorestframework
+$ python
+&gt;&gt;&gt; import django
+&gt;&gt;&gt; django.get_version()
+&#x27;3.2.3&#x27;</code></pre>
+</div>
+<br>
+<h3 id="a07d183f-80e6-4a68-be88-7f46b7040630" class="">2) Run Django</h3>
 
-console.log(fibonacci(15));
-		      </code>
-	      </pre>
-      </div>
+<div class="code-wrapper">
+<pre id="81447934-5072-4c4f-8307-79dade161cc1" class="code"><code>$ django-admin startproject EdyNBlog
+$ cd EdyNBLog
+$ python manage.py runserver</code></pre>
+</div>
+
+<div class="text-center">
+<img src="assets_env_image/0.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<br>
+<h3 id="99032e78-8b8d-40ad-a8db-1cbb901b4777" class="">3) Modeling</h3>
+
+<div class="text-center">
+<img src="assets_env_image/1.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<br>
+<h3 id="412cad78-8838-4208-9260-fade0a817393" class="">4) Create Blog APP</h3>
+
+<div class="code-wrapper">
+<pre id="567e281e-16e2-4c91-8ffe-f1569f474736" class="code"><code>$ pwd
+/home/edyn/Envs/DjangoEdyN/EdyNBlog
+
+$ django-admin startapp blog
+$ tree
+.
+├── blog
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
+├── db.sqlite3
+├── EdyNBlog
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-38.pyc
+│   │   ├── settings.cpython-38.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   └── wsgi.cpython-38.pyc
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+└── manage.py
+
+$ python manage.py migrate</code></pre>
+</div>
+<br>
+<h3 id="6af5dc6b-ecf9-4ada-bb9e-3ff58f82ee37" class="">5) Programming</h3><h3 id="004cc1c5-13be-4cf0-9ebe-f595394c6092" class="">5.1) EdyNBlog/EdyNBlog/settings.py</h3>
+
+<div class="code-wrapper">
+<pre id="dd96af09-a944-464f-8155-7de5e976bc74" class="code"><code>INSTALLED_APPS = [
+...
++++ &#x27;rest_framework&#x27;,
++++ &#x27;blog&#x27;,
+]</code></pre>
+</div>
+
+<h3 id="cb6502f3-01d7-4490-b695-d0f112483f33" class="">5.2) EdyNBlog/blog/models.py</h3>
+
+<div class="code-wrapper">
+<pre id="d257a047-675e-4e4e-9629-840fd405b894" class="code"><code>from django.db import models
+from django.db.models.base import Model
+
+
+class Category(models.Model):
+name = models.CharField(max_length=100)
+
+def __str__(self):
+    return self.name
+
+
+class Cover(models.Model):
+name = models.TextField()
+description = models.CharField(max_length=25, blank=True, null=True)
+
+def __str__(self):
+    return self.name
+
+
+class Tag(models.Model):
+name = models.CharField(max_length=50)
+
+def __str__(self):
+    return self.name
+
+
+class Post(models.Model):
+name = models.CharField(max_length=250)
+active = models.BooleanField(default=False)
+content = models.TextField()
+created = models.DateTimeField(auto_now_add=True)
+category = models.ForeignKey(
+    Category,
+    on_delete=models.SET_NULL,
+    blank=True,
+    null=True,
+)
+cover = models.ForeignKey(
+    Cover,
+    on_delete=models.SET_NULL,
+    blank=True,
+    null=True
+)
+tags = models.ManyToManyField(Tag)
+
+class Meta:
+    ordering = [&#x27;created&#x27;]
+
+def __str__(self):
+    return self.name</code></pre>
+</div>
+
+<h3 id="75898067-c502-4966-b9f1-c4dc8091cfb7" class="">5.3) Migrate</h3>
+
+<div class="code-wrapper">
+<pre id="5aeed72a-4fc0-44b0-ab13-2bdabc3540df" class="code"><code>$ python manage.py makemigrations blog
+$ python manage.py migrate</code></pre>
+</div>
+
+<h3 id="bcff4ea4-2b82-4199-a9e8-f0928bf38f98" class="">5.4) Shell</h3>
+
+<div class="code-wrapper">
+<pre id="d2f68772-c9a0-4c82-af7e-4086ff657ae4" class="code"><code>$ python manage shell
+&gt;&gt;&gt; from blog.models import Category, Cover, Tag, Post
+&gt;&gt;&gt; category1 = Category(name=&#x27;Python&#x27;)
+&gt;&gt;&gt; category1.save()
+&gt;&gt;&gt; Category.objects.all()
+&lt;QuerySet [&lt;Category: Python&gt;]&gt;
+&gt;&gt;&gt; category1.name = &#x27;Backend&#x27;
+&gt;&gt;&gt; category1.save()
+&gt;&gt;&gt; Category.objects.all()
+&lt;QuerySet [&lt;Category: Backend&gt;]&gt;
+&gt;&gt;&gt; tag1 = Tag(name=&#x27;Python&#x27;)
+&gt;&gt;&gt; tag1.save()
+&gt;&gt;&gt; tag2 = Tag(name=&#x27;Django&#x27;)
+&gt;&gt;&gt; tag2.save()
+&gt;&gt;&gt; Tag.objects.all()
+&lt;QuerySet [&lt;Tag: Python&gt;, &lt;Tag: Django&gt;]&gt;
+&gt;&gt;&gt; Post(name=&#x27;Hello World!!&#x27;, content=&#x27;&lt;p&gt;Blablabla&lt;/p&gt;&#x27;, category=category1).save()
+&gt;&gt;&gt; Post.objects.all()
+&lt;QuerySet [&lt;Post: Hello World!!&gt;]&gt;
+&gt;&gt;&gt; post1 = Post.objects.all()[0]
+&gt;&gt;&gt; post1.category
+&lt;Category: Backend&gt;
+&gt;&gt;&gt; post1.tags.add(tag1)
+&gt;&gt;&gt; post1.tags.add(tag2)
+&gt;&gt;&gt; post1.tags.all()
+&lt;QuerySet [&lt;Tag: Python&gt;, &lt;Tag: Django&gt;]&gt;
+&gt;&gt;&gt; post1.save()
+&gt;&gt;&gt; cover1 = Cover(name=&#x27;image1&#x27;)
+&gt;&gt;&gt; cover1.save()
+&gt;&gt;&gt; post1.cover = cover1
+&gt;&gt;&gt; post1.save()</code></pre>
+</div>
+
+<h3 id="a16df99f-41fd-42d4-b200-a1f28e1006b0" class="">5.5) EdyNBlog/blog/serializers.py</h3>
+
+<div class="code-wrapper">
+<pre id="de459d5d-d123-40e1-b2f8-bd4c06b27719" class="code"><code>from rest_framework import serializers
+from .models import Category, Post, Cover, Tag
+
+
+class TagSerializer(serializers.ModelSerializer):
+class Meta:
+    model = Tag
+    fields = [&#x27;name&#x27;]
+
+
+class CoverSerializer(serializers.ModelSerializer):
+class Meta:
+    model = Cover
+    fields = [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;description&#x27;]
+
+
+class PostSerializer(serializers.ModelSerializer):
+cover = CoverSerializer()
+tags = TagSerializer(many=True, required=False)
+created = serializers.DateTimeField(format=&#x27;%d-%m-%Y&#x27;)
+
+class Meta:
+    model = Post
+    fields = [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;active&#x27;, &#x27;content&#x27;,
+                &#x27;created&#x27;, &#x27;cover&#x27;, &#x27;category&#x27;, &#x27;tags&#x27;]
+
+
+class CategorySerializer(serializers.ModelSerializer):
+posts = PostSerializer(many=True, required=False)
+
+class Meta:
+    model = Category
+    fields = [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;posts&#x27;]</code></pre>
+</div>
+
+<h3 id="7586ca6c-ff2e-4ea6-9b78-e7249e9303e0" class="">5.6) EdyNBlog/blog/views.py</h3>
+
+<div class="code-wrapper">
+<pre id="7723e334-c017-4cdb-bece-d6cf819d0487" class="code"><code>from rest_framework import serializers, status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+
+from .models import Category, Post, Tag
+from .serializers import CategorySerializer, PostSerializer, TagSerializer
+
+
+@api_view([&#x27;GET&#x27;])
+def category_list(request):
+if request.method == &#x27;GET&#x27;:
+    category = Category.objects.all()
+    serializers = CategorySerializer(category, many=True)
+    return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+@api_view([&#x27;GET&#x27;])
+def tag_list(request):
+if request.method == &#x27;GET&#x27;:
+    tags = Tag.objects.all()
+    serializers = TagSerializer(tags, many=True)
+    return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+@api_view([&#x27;GET&#x27;])
+def post_list(request):
+if request.method == &#x27;GET&#x27;:
+    posts = Post.objects.all()
+    serializers = PostSerializer(posts, many=True)
+    return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+@api_view([&#x27;GET&#x27;])
+def post_detail(request, pk):
+try:
+    post = Post.objects.get(pk=pk)
+except Post.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+
+if request.method == &#x27;GET&#x27;:
+    serializer = PostSerializer(post)
+    return Response(serializer.data, status=status.HTTP_200_OK)</code></pre>
+</div>
+
+<h3 id="1217a2bf-c8a6-40e3-ae8c-aad2e6d7c8c2" class="">5.7) EdyNBlog/blog/urls.py</h3>
+
+<div class="code-wrapper">
+<pre id="a5276dca-2359-44bf-a686-be877001a6d5" class="code"><code>from django.urls import path
+from . import views
+
+
+urlpatterns = [
+path(&#x27;category/&#x27;, views.category_list),
+path(&#x27;tags/&#x27;, views.tag_list),
+path(&#x27;posts/&#x27;, views.post_list),
+path(&#x27;post/&lt;int:pk&gt;&#x27;, views.post_detail)
+]
+
+
+4.7) EdyNBlog/EdyNBlog/urls.py
+from django.contrib import admin
+from django.urls import path
+from django.urls.conf import include
+
+urlpatterns = [
+path(&#x27;admin/&#x27;, admin.site.urls),
+path(&#x27;blog/&#x27;, include(&#x27;blog.urls&#x27;)),
+]</code></pre>
+</div>
+<br>
+<h3 id="247a3ec1-b661-4858-be01-563f21832339" class="">6) API&#x27;s</h3>
+<div class="code-wrapper">
+<pre><code>$ python manage runserver</code>
+</pre>
+</div>
+
+<h3 id="6c401fef-5749-4336-a59b-27ed94599133" class="">6.1) Category</h3>
+
+<div class="text-center">
+<img src="assets_env_image/2.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="7607fda9-40b2-4785-8b25-cd66c9e34f60" class="">6.2) Tag</h3>
+
+<div class="text-center">
+<img src="assets_env_image/3.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="3ddbc4d8-1156-498f-ae3e-a195295be9a7" class="">6.3) Post</h3>
+
+<div class="text-center">
+<img src="assets_env_image/4.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<br>
+<h3 id="2d8dfdd8-09bd-4ddf-a4f1-f88968128636" class="">7) admin</h3>
+
+<div class="code-wrapper"><pre><code>$ python manage.py createsuperuser --username admin</code></pre>
+<h3 id="590b6466-5639-4a43-8ed7-080a7c97fee1" class="">7.1) EdyNBlog/blog/admin.py</h3>
+
+<div class="code-wrapper">
+<pre id="0a502dc1-6e23-4be8-a983-e32c62e65c74" class="code"><code>from django.contrib import admin
+from .models import Category, Cover, Post, Tag
+
+admin.site.register(Category)
+admin.site.register(Cover)
+admin.site.register(Tag)
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+list_display = (&#x27;pk&#x27;, &#x27;name&#x27;, &#x27;active&#x27;, &#x27;created&#x27;, &#x27;content&#x27;, &#x27;cover&#x27;)</code></pre>
+</div>
+
+<div class="text-center">
+<img src="assets_env_image/5.png" alt="" class="rounded" style="width: 80%;">
+</div>
