@@ -1,0 +1,51 @@
+<h2 id="ace6fc8b-f46e-468c-a39f-c0fcf88b40b9" class=""><strong>What is the AWS account root user?</strong></h2><p id="efa5bd0d-405e-4da1-9e15-44a7bd343cfa" class="">In AWS, the root user is the first and only identity that exists when you create an AWS account.</p><p id="566a7d84-8e19-4a43-afc6-2c01d093a5b1" class="">The root user has a password to access the console, and optionally access keys (access key IDs and secret access keys) for accessing the API’s.</p><p id="00bc6ce9-67a4-4088-a0a1-39a005e185b3" class="">
+</p>
+
+<h2 id="72e8d250-3f3d-4c1f-a3a9-4a337ebe75df" class=""><strong>Why secure the root user?</strong></h2><p id="1cef71bd-c21c-4310-a8d6-4368497a30c6" class="">Anyone with access to your root user email address and password has full access to all resources and data in your account in every region.</p><p id="ebc2b59d-661a-4bc5-82b0-0d30a1307dc7" class="">The root user cannot have a policy attached to restrict the level of access.</p><p id="24c1c489-1bf4-4280-b7c5-c0cb80bdb2c3" class="">If someone with malicious intent had your root user credentials, like a disgruntled employee or contractor, they could easily do a lot of harm.</p><p id="d1288a25-f4ff-46ef-a9b5-13228ec44d14" class="">
+</p><p id="f2be1b5b-8033-4ec8-ba0b-5dfb06c07503" class="">In many cases AWS is unable to recover your data, as its your responsibility as part of the shared responsibility model to protect your account, infrastructure, and data appropriately.</p>
+<a href="https://aws.amazon.com/compliance/shared-responsibility-model/?nc1=h_ls" target="_blank" class="link-info">Shared Responsibility Model - Amazon Web Services (AWS)</a>
+
+<h2 id="007f6077-6e50-4a4f-b402-c3ee081efb96" class=""><strong>Best practice</strong></h2>
+
+<h3 id="8e5a67ad-90c5-4891-82cf-129973aad463" class="">1) Remove access keys</h3><p id="19c57ba3-2dff-460e-a087-f244e0aab02e" class="" target="_blank">You should never have access keys for your root user, you should delete or deactivate them.</p>
+<a href="https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html" target="_blank" class="link-info">Security Pillar - AWS Well-Architected Framework</a>
+<p id="04646b8a-f153-4bc4-abda-57aca8ee49ea" class="">If you really must have an access key for a valid reason, you can use temporary credentials from </p><p id="a4cb804c-5aae-488f-8787-c432c5148360" class="">AWS Security Token Service (AWS STS).</p>
+
+<a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html" target="_blank" class="link-info">Using temporary credentials with AWS resources</a>
+<p id="f04c2cc2-cf8b-43d9-99b3-955c4f060193" class="">If you have an EC2 instance or Lambda function that needs to access to AWS API&#x27;s, you can simply use a role to get temporary credentials.</p>
+
+<a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2.html" target="_blank" class="link-info">Using an IAM role to grant permissions to applications running on Amazon EC2 instances</a>
+<h3 id="a6c89e6a-ee9c-4a71-b624-79f73a8bd886" class="">2) Enable multi-factor authentication (MFA)</h3><p id="afaf2035-c737-46b3-9121-f524a1531ee6" class="">A MFA virtual or hardware device can be added to your root user to provide an additional layer of authentication.</p>
+<div class="text-center">
+<img src="assets_env_image/1.png" alt="" class="rounded" style="width: 80%;">
+</div>
+
+<h3 id="bdbd8fb0-0d05-430d-97e3-b87ced3f80d0" class="">3) Stop using the root user</h3><p id="aa2a8b95-1c76-4b32-b5f0-5a91aacccf3c" class="">There are only a few tasks that require you to use the root user:</p>
+<a href="https://docs.aws.amazon.com/general/latest/gr/root-vs-iam.html#aws_tasks-that-require-root" target="_blank" class="link-info">AWS account root user credentials and IAM user credentials</a>
+
+<ul id="6dc52919-6d71-4cea-9c67-b8e49754b126" class="bulleted-list"><li>Change your account settings.</li></ul><ul id="a8057f09-3599-4157-9227-d30ed81884cd" class="bulleted-list"><li>View certain tax invoices.</li></ul><ul id="f8c2f9b8-714d-4217-93e5-418d37e4005f" class="bulleted-list"><li>Close your AWS account.</li></ul><ul id="2586ef3b-a80c-4e31-95fd-698c04b5266f" class="bulleted-list"><li>Restore IAM user permissions.</li></ul><ul id="5bc91a44-1262-4d31-874d-08c7e4c44f36" class="bulleted-list"><li>Change your AWS Supoort plan.</li></ul>
+
+<div class="text-center">
+<img src="assets_env_image/2.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<ul id="f5f566bf-ae01-411e-8397-05365d3cc081" class="bulleted-list"><li>Register as a seller in the Reserved Instance Marketplace.</li></ul>
+
+<div class="text-center">
+<img src="assets_env_image/3.png" alt="" class="rounded" style="width: 80%;">
+</div>
+<ul id="047b55ca-ec5a-4772-bb91-daddaf18e12c" class="bulleted-list"><li>Configure an Amazon S3 Bucket to enable MFA Delete.</li></ul>
+<a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/MultiFactorAuthenticationDelete.html" target="_blank" class="link-info">Configuring MFA delete</a>
+<p id="d1710b26-9a0f-4cf5-84f7-6ac4bfb19834" class="">MFA Delete or explicity deny bukcet policy. Also S3 object lock.</p>
+<a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lock.html" target="_blank" class="link-info">Using S3 Object Lock</a>
+
+
+<h3 id="1c0edb2d-4920-459b-8ca9-599718687b49" class=""><strong>4) Centralize identity management</strong></h3><p id="014d7d5e-380b-433f-859b-2d4d1bd7b482" class="">Creating and using IAM users is much better than using root.</p><p id="6a06426e-8031-4712-a024-be724f40e86e" class="">However there is a better way!</p><p id="eff0844c-9aa0-4d0c-945f-6e62acbd7340" class="">SSO allows you to configure users, including yourself, in the service.</p>
+<a href="https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html" target="_blank" class="link-info">What is AWS Single Sign-On?</a>
+<p id="44828198-c143-4ff3-8066-b6d23fbff82f" class="">The users can have permissions following least-privilege, and they can be used across all your AWS accounts in your AWS Organization.</p>
+<a href="https://docs.aws.amazon.com/es_es/organizations/latest/userguide/orgs_introduction.html" target="_blank" class="link-info">¿Qué es AWS Organizations?</a>
+<p id="7fd90bbe-2798-45f4-bbbf-f70dbc2de5db" class="">SSO provides you access to the AWS console, and can even generate you temporary credentials including an access key.</p><p id="aafe244f-3710-459a-9ac0-1222ceea48e2" class="">If SSO is not for you, then you can enable federation with IAM.</p>
+<a href="https://aws.amazon.com/identity/federation/" target="_blank" class="link-info">Federation - Amazon Web Services (AWS)</a>
+
+
+<h3 id="6e58c573-d696-4808-808d-f95e971ffdbc" class=""><strong>5) Configure AWS account alternate contacts</strong></h3><p id="c58e55d7-dfcf-4056-8186-c914bd1465b4" class="">Alternate contacts enable AWS to contact another person about issues with the account, even if you are unavailable.</p><p id="d96cae5a-b3cc-429a-a92c-41f479f5f108" class=""><a href="https://console.aws.amazon.com/billing/home?#/account/" target="_blank" class="link-info">https://console.aws.amazon.com/billing/home?#/account/</a></p><h3 id="79202122-9518-4521-a4c1-99c5bba40fc4" class=""><strong>6) Get notified when root user is used</strong></h3><p id="dfc5335e-a9a8-4342-8bc6-788eebc52878" class="">Getting notified automatically when your root user is used helps you understand who is using it, and detect unauthorized access.</p>
+<a href="https://aws.amazon.com/premiumsupport/knowledge-center/root-user-account-cloudwatch-rule/" target="_blank" class="link-info">Create Cloudwatch Event rule to notify me root user account was used</a>
