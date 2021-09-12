@@ -1,0 +1,83 @@
+<strong>HEAD</strong>
+<p id="bdee1dd4-2a22-478d-9b6a-ddc6342e1f49" class="">El concepto de HEAD es muy simple: se refiere al commit en el que está tu repositorio posicionado en cada momento. Por regla general HEAD suele coincidir con el último commit de la rama en la que estés, ya que habitualmente estás trabajando en lo último. Pero si te mueves hacia cualquier otro commit anterior entonces el HEAD estará más atrás.</p>
+</br>
+<h2>Git Reset</h2>
+<div class="code-wrapper">
+	<pre><code id="code">*   6c984e8 (HEAD -&gt; master, dev2) demo3 merge
+|\  
+| * de0569d (dev1) demo3 line2
+* | fcc7ef8 demo3 line3
+|/  
+* c35a74e demo2 line2
+* 9964e11 demo3 line1
+* d62b793 demo2 linea1
+* f7a96ab line3
+* 78076fd line2
+* 4ec7cd8 line1</code>
+</pre>
+</div>
+<p>
+git reset --hard HEAD~2
+</p>
+<div class="code-wrapper">
+	<pre><code id="code">*   6c984e8 (dev2) demo3 merge
+|\  
+| * de0569d (dev1) demo3 line2
+* | fcc7ef8 demo3 line3
+|/  
+* c35a74e (HEAD -&gt; master) demo2 line2
+* 9964e11 demo3 line1
+* d62b793 demo2 linea1
+* f7a96ab line3
+* 78076fd line2
+* 4ec7cd8 line1</code></pre>
+</div>
+</br>
+<h2>Git Revert</h2>
+<p>git revert HEAD~1</p>
+<div class="code-wrapper">
+	<pre><code id="code">* e1d2763 (HEAD -&gt; master) Revert &quot;demo3 line1&quot;
+| *   6c984e8 (dev2) demo3 merge
+| |\  
+| | * de0569d (dev1) demo3 line2
+| |/  
+|/|   
+| * fcc7ef8 demo3 line3
+|/  
+* c35a74e demo2 line2
+* 9964e11 demo3 line1
+* d62b793 demo2 linea1
+* f7a96ab line3
+* 78076fd line2
+* 4ec7cd8 line1</code></pre>
+</div>
+<p><strong>
+# Revertir 2 commit en un solo commit
+</strong></p>
+<p>
+git revert --no-commit c35a74e
+</p>
+<p>
+git revert --no-commit d62b793
+</p>
+<p>
+git revert --continue
+</p>
+<div class="code-wrapper">
+	<pre><code id="code">* db760e0 (HEAD -&gt; master) Revert &quot;demo2 linea1&quot;
+* e1d2763 Revert &quot;demo3 line1&quot;
+| *   6c984e8 (dev2) demo3 merge
+| |\  
+| | * de0569d (dev1) demo3 line2
+| |/  
+|/|   
+| * fcc7ef8 demo3 line3
+|/  
+* c35a74e demo2 line2
+* 9964e11 demo3 line1
+* d62b793 demo2 linea1
+* f7a96ab line3
+* 78076fd line2
+* 4ec7cd8 line1</code></pre>
+</div>
+<h2 id="af8e4ed0-3714-4681-b203-f40be1865838" class="">Tip:</h2><p id="6fea0e95-adea-40b8-8968-38a3bd78cc13" class="">alias arbolito=&quot;git log --all --graph --decorate --oneline&quot;</p>

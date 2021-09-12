@@ -1,0 +1,114 @@
+<div class="text-center">	
+    <img src="assets_env_image/14.png" class="rounded" alt="Odoo-docker" style="width: 100%;"/>
+</div>
+</br>
+<h2>odoo.conf</h2>
+<div class="code-wrapper">
+	<pre><code id="code">[options]
+admin_passwd = soysuperpassword
+addons_path = /mnt/extra-addons/addons,/mnt/extra-addons/odoo/addons,/mnt/enterprise,/mnt/edyN
+data_dir = /var/lib/odoo</code>
+    </pre>
+</div>
+</br>
+<h2 id="b3961e7d-dd8c-467f-8fb9-3c7136a41a68" class="">odoo-docker-compose.yml</h2>
+<div class="code-wrapper">
+	<pre><code id="code">version: &#x27;3.1&#x27;
+services:
+  web:
+    image: odoo:14.0
+    depends_on:
+      - db
+    ports:
+      - &quot;8070:8069&quot;
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./odoo:/mnt/extra-addons
+      - ./enterprise:/mnt/enterprise
+      - ./addons_extra:/mnt/edyN
+    environment:
+      PASSWORD_FILE: /run/secrets/postgresql_password
+    secrets:
+      - postgresql_password
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgresql_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    secrets:
+      - postgresql_password
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:
+
+secrets:
+  postgresql_password:
+    file: odoo_pg_pass</code>
+</pre>
+</div>
+<div class="code-wrapper">
+	<pre>
+		<code id="code">
+docker-compose -f odoo-docker-compose.yml up</code>
+    </pre>
+</div>
+</br>
+<h2 id="197ecfa2-2d78-468a-8b13-a91341b1e7cb" class="">Docker Run</h2>
+<div class="code-wrapper"><pre><code>docker run -d \
+    -v odoo-db-data:/var/lib/postgresql/data \
+    -e POSTGRES_USER=odoo \
+    -e POSTGRES_PASSWORD=/home/edyn/Documentos/Proyectos/DockerImages/Odoo/odoo_pg_pass \
+    -e POSTGRES_DB=postgres \
+    -e PGDATA=/var/lib/postgresql/data/pgdata \
+    --name db postgres:13</code>
+</pre></div>
+<div class="code-wrapper">
+    <pre><code>docker run -d --name odoo_web1 \
+    -v odoo-web-data:/var/lib/odoo \
+    -v /home/edyn/Documentos/Proyectos/DockerImages/Odoo/config:/etc/odoo \
+    -v /home/edyn/Documentos/Proyectos/DockerImages/Odoo/odoo:/mnt/extra-addons \
+    -v /home/edyn/Documentos/Proyectos/DockerImages/Odoo/enterprise:/mnt/enterprise \
+    -v /home/edyn/Documentos/Proyectos/DockerImages/Odoo/addons_extra:/mnt/edyN \
+    -p 8070:8069 \
+    -e POSTGRES_PASSWORD=/home/edyn/Documentos/Proyectos/DockerImages/Odoo/odoo_pg_pass \
+    --link db:db \
+    odoo:14.0</code>
+</pre>
+</div>
+<div class="code-wrapper">
+    <pre>
+<code>docker logs -f odoo_web1
+
+docker exec -it odoo_web1 bash</code></pre>
+</div>
+</br>
+<h2>Links:</h2>
+<ul>
+    <li>
+        <a href="https://www.cybrosys.com/blog/logging-in-odoo-13" class="link-info" target="_blank">Logging in Odoo 13</a>
+    </li>
+    <li>
+        <a href="https://www.cybrosys.com/blog/odoo-14-deployment-using-docker" class="link-info" target="_blank">Odoo 14 Deployment using Docker | Install Odoo with Docker.</a>
+    </li>
+    <li>
+        <a href="https://mellowhost.com/blog/how-to-enable-logging-in-odoo.html" class="link-info" target="_blank">https://mellowhost.com/blog/how-to-enable-logging-in-odoo.html</a>
+    </li>
+    <li>
+        <a href="https://gist.github.com/Guidoom/d5db0a76ce669b139271a528a8a2a27f" class="link-info" target="_blank">Sample odoo.conf file</a>
+    </li>
+    <li>
+        <a href="https://stackoverflow.com/a/36489937/4746720" class="link-info" target="_blank">Cannot link to a running container started by docker-compose</a>
+    </li>
+    <li>
+        <a href="https://registry.hub.docker.com/_/odoo/?tab=description&amp;page=1&amp;ordering=last_updated" class="link-info" target="_blank">Odoo - Official Image | Docker Hub</a>
+    </li>
+    <li>
+        <a href="https://hub.docker.com/_/postgres" class="link-info" target="_blank">Postgres - Official Image | Docker Hub</a>
+    </li>
+</ul>
